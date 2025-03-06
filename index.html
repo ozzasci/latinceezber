@@ -112,6 +112,7 @@
     <button onclick="setReminder()">Hatırlatma Ayarla (5 sn)</button>
     <button onclick="markAsLearned()">Öğrenildi</button>
     <button onclick="speakWord()">Dinle</button>
+    <button onclick="showDetailedStats()">Detaylı İstatistikler</button>
     <button onclick="startQuiz()">Teste Başla</button>
     <p id="reminderStatus"></p>
 
@@ -630,7 +631,11 @@
         function closeStats() {
             document.getElementById("stats").style.display = "none";
         }
-
+function showDetailedStats() {
+    const learned = words.filter(w => w.learned).length;
+    const accuracy = (correctCount / (correctCount + wrongCount) * 100).toFixed(2) || 0;
+    alert(`Detaylı İstatistikler:\nÖğrenilen: ${learned}\nDoğru: ${correctCount}\nYanlış: ${wrongCount}\nBaşarı: %${accuracy}`);
+}
         // Oyunlaştırma (Rozetler)
         function updateBadges() {
             const learnedCount = words.filter(word => word.learned).length;
