@@ -16,7 +16,6 @@
             background-color: #333;
             color: #fff;
         }
-
         .card {
             background-color: white;
             width: 300px;
@@ -42,8 +41,6 @@
             display: none;
             color: #555;
         }
-
-        /* Dropdown Stili */
         .dropdown {
             margin: 10px auto;
             max-width: 600px;
@@ -86,13 +83,10 @@
             display: block;
             width: 100%;
             padding: 10px;
-            margin: 0;
             background-color: transparent;
             color: #333;
             border: none;
-            border-radius: 0;
             text-align: left;
-            box-shadow: none;
             transition: background-color 0.2s;
         }
         .dark .dropdown-menu button {
@@ -111,8 +105,6 @@
         #resetButton:hover {
             background-color: #d32f2f;
         }
-
-        /* Diğer Bölümler */
         #progress, #quizSection, #stats {
             margin-top: 20px;
             font-size: 18px;
@@ -128,47 +120,45 @@
             margin-top: 20px;
             color: #FFD700;
         }
-        input[type="time"], input[type="text"], select {
+        input[type="time"], input[type="text"] {
             padding: 5px;
             margin: 5px;
         }
-        category-buttons {
-    margin: 20px auto;
-    max-width: 600px;
-}
-
-.category-btn {
-    padding: 10px 20px;
-    margin: 5px;
-    background-color: #2196F3; /* Mavi ton, farklı bir renk olsun */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    transition: background-color 0.3s, box-shadow 0.3s;
-}
-
-.category-btn:hover {
-    background-color: #1976D2;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-}
-
-.dark .category-btn {
-    background-color: #1E88E5;
-}
-
-.dark .category-btn:hover {
-    background-color: #1565C0;
-}
-
-        /* Mobil Uyumluluk */
+        .category-buttons {
+            margin: 20px auto;
+            max-width: 600px;
+        }
+        .category-btn {
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        .category-btn:hover {
+            background-color: #1976D2;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        .dark .category-btn {
+            background-color: #1E88E5;
+        }
+        .dark .category-btn:hover {
+            background-color: #1565C0;
+        }
         @media (max-width: 600px) {
             .dropdown-toggle, .dropdown-menu {
                 width: 100%;
             }
             .card {
                 width: 100%;
+            }
+            .category-btn {
+                width: 100%;
+                margin: 5px 0;
             }
         }
     </style>
@@ -181,7 +171,6 @@
         <img id="wordImage" src="" alt="" style="max-width: 100%; display: none;">
     </div>
 
-    <!-- Açılır Menüler -->
     <div class="dropdown">
         <button class="dropdown-toggle" onclick="toggleDropdown('kelime-kontrolu')">Kelime Kontrolü</button>
         <div class="dropdown-menu" id="kelime-kontrolu">
@@ -223,145 +212,12 @@
     <div>
         <input type="text" id="search" placeholder="Kelime ara" onkeyup="searchWord()">
     </div>
-   <div class="category-buttons">
-    <h3>Kategori Seç</h3>
-    <button class="category-btn" onclick="filterByCategory('Hepsi')">Hepsi</button>
-    <button class="category-btn" onclick="filterByCategory('Siyasi')">Siyasi</button>
-    <button class="category-btn" onclick="filterByCategory('Askeri')">Askeri</button>
-    <button class="category-btn" onclick="filterByCategory('Günlük Yaşam')">Günlük Yaşam</button>
-</div>
-
-    <div>
-        <h3>Zamanlanmış Hatırlatma</h3>
-        <input type="time" id="reminderTime">
-        <button onclick="setCustomReminder()">Zamanı Ayarla</button>
-        <p id="customReminderStatus"></p>
-    </div>
-
-    <div id="progress">
-        Öğrenilen Kelimeler: <span id="learnedCount">0</span> / <span id="totalCount">0</span>
-    </div>
-
-    <div id="quizSection">
-        <h3>Test Modu</h3>
-        <p id="quizWord"></p>
-        <p>Kalan Süre: <span id="timer">15</span> sn</p>
-        <input type="text" id="userAnswer" placeholder="Anlamdeclare: none;
-        margin: 5px;
-        cursor: pointer;
-        border-radius: 5px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        transition: background-color 0.3s, box-shadow 0.3s;
-    }
-
-    button:hover {
-        background-color: #45a049;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    }
-
-    #resetButton {
-        background-color: #f44336;
-    }
-
-    #resetButton:hover {
-        background-color: #d32f2f;
-    }
-
-    input[type="time"], input[type="text"], select {
-        padding: 5px;
-        margin: 5px;
-    }
-
-    #progress, #quizSection, #stats {
-        margin-top: 20px;
-        font-size: 18px;
-    }
-
-    #quizSection, #stats {
-        display: none;
-    }
-
-    #result {
-        color: #333;
-    }
-
-    #timer {
-        color: #f44336;
-        font-weight: bold;
-    }
-
-    #badges {
-        margin-top: 20px;
-        color: #FFD700;
-    }
-
-    /* Mobil uyumluluk */
-    @media (max-width: 600px) {
-        button {
-            width: 100%;
-            margin: 5px 0;
-        }
-    }
-    </style>
-</head>
-<body class="light">
-    <h1>Roma Latince Kelime Ezber</h1>
-    <div class="card" id="card" onclick="toggleMeaning()">
-        <h2 id="word">Imperium</h2>
-        <p id="meaning">Güç, otorite</p>
-        <img id="wordImage" src="" alt="" style="max-width: 100%; display: none;">
-    </div>
-
-    <!-- Açılır Menüler -->
-    <div class="dropdown">
-        <button class="dropdown-toggle" onclick="toggleDropdown('kelime-kontrolu')">Kelime Kontrolü</button>
-        <div class="dropdown-menu" id="kelime-kontrolu">
-            <button onclick="nextWord()">Sonraki Kelime</button>
-            <button onclick="markAsLearned()">Öğrenildi</button>
-            <button onclick="speakWord()">Dinle</button>
-        </div>
-    </div>
-
-    <div class="dropdown">
-        <button class="dropdown-toggle" onclick="toggleDropdown('ayarlar')">Ayarlar</button>
-        <div class="dropdown-menu" id="ayarlar">
-            <button onclick="setReminder()">Hızlı Hatırlatma (5 sn)</button>
-            <button onclick="setCustomReminder()">Zamanlı Hatırlatma</button>
-            <button onclick="setDailyGoal()">Günlük Hedef Belirle</button>
-            <button onclick="checkDailyGoal()">Hedefi Kontrol Et</button>
-        </div>
-    </div>
-
-    <div class="dropdown">
-        <button class="dropdown-toggle" onclick="toggleDropdown('test-istatistik')">Test ve İstatistik</button>
-        <div class="dropdown-menu" id="test-istatistik">
-            <button onclick="startQuiz()">Teste Başla</button>
-            <button onclick="showDetailedStats()">Detaylı İstatistikler</button>
-            <button onclick="calculateDifficulty()">Zor Kelimeleri Bul</button>
-        </div>
-    </div>
-
-    <div class="dropdown">
-        <button class="dropdown-toggle" onclick="toggleDropdown('diger')">Diğer</button>
-        <div class="dropdown-menu" id="diger">
-            <button onclick="addNewWord()">Yeni Kelime Ekle</button>
-            <button id="resetButton" onclick="resetProgress()">İlerlemeyi Sıfırla</button>
-            <button onclick="toggleTheme()">Tema Değiştir</button>
-        </div>
-    </div>
-
-    <p id="reminderStatus"></p>
-    <div>
-        <input type="text" id="search" placeholder="Kelime ara" onkeyup="searchWord()">
-    </div>
-    <div>
+    <div class="category-buttons">
         <h3>Kategori Seç</h3>
-        <select id="categoryFilter" onchange="filterByCategory(this.value)">
-            <option value="Hepsi">Hepsi</option>
-            <option value="Siyasi">Siyasi</option>
-            <option value="Askeri">Askeri</option>
-            <option value="Günlük Yaşam">Günlük Yaşam</option>
-        </select>
+        <button class="category-btn" onclick="filterByCategory('Hepsi')">Hepsi</button>
+        <button class="category-btn" onclick="filterByCategory('Siyasi')">Siyasi</button>
+        <button class="category-btn" onclick="filterByCategory('Askeri')">Askeri</button>
+        <button class="category-btn" onclick="filterByCategory('Günlük Yaşam')">Günlük Yaşam</button>
     </div>
 
     <div>
@@ -602,19 +458,22 @@
             { latin: "Monumentum", meaning: "Anıt", learned: false, category: "Günlük Yaşam", wrongAttempts: 0, correctAttempts: 0, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Arch_of_Constantine.jpg/320px-Arch_of_Constantine.jpg" }   
         ];
 
-    let currentIndex = 0;
+ let currentIndex = 0;
         let correctCount = 0;
         let wrongCount = 0;
         let timerInterval;
         let currentCategory = "Hepsi";
 
         window.onload = function() {
-            const savedWords = JSON.parse(localStorage.getItem("learnedWords"));
-            if (savedWords) {
+            const savedWords = JSON.parse(localStorage.getItem("learnedWords")) || [];
+            if (savedWords.length > 0) {
                 words.forEach((word, index) => {
-                    word.learned = savedWords[index].learned;
-                    word.wrongAttempts = savedWords[index].wrongAttempts || 0;
-                    word.correctAttempts = savedWords[index].correctAttempts || 0;
+                    if (savedWords[index]) {
+                        word.learned = savedWords[index].learned;
+                        word.wrongAttempts = savedWords[index].wrongAttempts || 0;
+                        word.correctAttempts = savedWords[index].correctAttempts || 0;
+                        word.learnedDate = savedWords[index].learnedDate || null;
+                    }
                 });
             }
             updateProgress();
@@ -721,6 +580,7 @@
         function markAsLearned() {
             if (!words[currentIndex].learned) {
                 words[currentIndex].learned = true;
+                words[currentIndex].learnedDate = new Date().toISOString();
                 localStorage.setItem("learnedWords", JSON.stringify(words));
                 alert(`${words[currentIndex].latin} öğrenildi!`);
                 updateProgress();
@@ -744,6 +604,7 @@
                     word.learned = false;
                     word.wrongAttempts = 0;
                     word.correctAttempts = 0;
+                    word.learnedDate = null;
                 });
                 localStorage.removeItem("learnedWords");
                 updateProgress();
@@ -802,6 +663,7 @@
                 document.getElementById("correctCount").innerText = correctCount;
                 if (!words[currentIndex].learned) {
                     words[currentIndex].learned = true;
+                    words[currentIndex].learnedDate = new Date().toISOString();
                     updateProgress();
                     updateBadges();
                 }
@@ -846,7 +708,7 @@
             const meaning = prompt("Anlamını girin:");
             const category = prompt("Kategoriyi girin (Siyasi, Askeri, Günlük Yaşam):");
             if (latin && meaning && category) {
-                words.push({ latin, meaning, learned: false, category, wrongAttempts: 0, correctAttempts: 0, image: "" });
+                words.push({ latin, meaning, learned: false, category, wrongAttempts: 0, correctAttempts: 0, image: "", learnedDate: null });
                 localStorage.setItem("learnedWords", JSON.stringify(words));
                 updateProgress();
                 alert("Kelime eklendi!");
@@ -864,7 +726,8 @@
 
         function calculateDifficulty() {
             words.forEach(word => {
-                word.difficulty = word.wrongAttempts / (word.correctAttempts + word.wrongAttempts) || 0;
+                const totalAttempts = word.correctAttempts + word.wrongAttempts;
+                word.difficulty = totalAttempts > 0 ? word.wrongAttempts / totalAttempts : 0;
             });
             const hardest = words.sort((a, b) => b.difficulty - a.difficulty)[0];
             alert(`En Zor Kelime: ${hardest.latin} (Zorluk: ${hardest.difficulty.toFixed(2)})`);
@@ -879,8 +742,9 @@
         }
 
         function checkDailyGoal() {
-            const goal = localStorage.getItem("dailyGoal") || 0;
-            const learnedToday = words.filter(w => w.learned && new Date().toDateString() === new Date().toDateString()).length;
+            const goal = parseInt(localStorage.getItem("dailyGoal")) || 0;
+            const today = new Date().toDateString();
+            const learnedToday = words.filter(w => w.learned && w.learnedDate && new Date(w.learnedDate).toDateString() === today).length;
             alert(`Hedef: ${goal}\nBugün Öğrenilen: ${learnedToday}`);
         }
 
