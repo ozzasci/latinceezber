@@ -1,4 +1,275 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roma Latince Kelime Ezber</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        body.dark {
+            background-color: #333;
+            color: #fff;
+        }
+        .card {
+            background-color: white;
+            width: 300px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .card:hover {
+            background-color: #e0e0e0;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+        .dark .card {
+            background-color: #444;
+            border-color: #666;
+        }
+        .dark .card:hover {
+            background-color: #555;
+        }
+        #meaning {
+            display: none;
+            color: #555;
+        }
+        .dropdown {
+            margin: 10px auto;
+            max-width: 600px;
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-toggle {
+            padding: 12px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: background-color 0.3s, box-shadow 0.3s;
+            width: 200px;
+            text-align: left;
+        }
+        .dropdown-toggle:hover {
+            background-color: #45a049;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 200px;
+            z-index: 1000;
+        }
+        .dark .dropdown-menu {
+            background-color: #444;
+            border-color: #666;
+        }
+        .dropdown-menu button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: transparent;
+            color: #333;
+            border: none;
+            text-align: left;
+            transition: background-color 0.2s;
+        }
+        .dark .dropdown-menu button {
+            color: #fff;
+        }
+        .dropdown-menu button:hover {
+            background-color: #e0e0e0;
+        }
+        .dark .dropdown-menu button:hover {
+            background-color: #555;
+        }
+        #resetButton {
+            background-color: #f44336;
+            color: white;
+        }
+        #resetButton:hover {
+            background-color: #d32f2f;
+        }
+        #progress, #quizSection, #stats {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        #quizSection, #stats {
+            display: none;
+        }
+        #timer {
+            color: #f44336;
+            font-weight: bold;
+        }
+        #badges {
+            margin-top: 20px;
+            color: #FFD700;
+        }
+        input[type="time"], input[type="text"] {
+            padding: 5px;
+            margin: 5px;
+        }
+        .category-buttons {
+            margin: 20px auto;
+            max-width: 600px;
+        }
+        .category-btn {
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        .category-btn:hover {
+            background-color: #1976D2;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        .dark .category-btn {
+            background-color: #1E88E5;
+        }
+        .dark .category-btn:hover {
+            background-color: #1565C0;
+        }
+        .quiz-options button {
+            display: block;
+            width: 200px;
+            margin: 5px auto;
+            padding: 10px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .quiz-options button:hover {
+            background-color: #1976D2;
+        }
+        @media (max-width: 600px) {
+            .dropdown-toggle, .dropdown-menu {
+                width: 100%;
+            }
+            .card {
+                width: 100%;
+            }
+            .category-btn {
+                width: 100%;
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body class="light">
+    <h1>Roma Latince Kelime Ezber</h1>
+    <div class="card" id="card" onclick="toggleMeaning()">
+        <h2 id="word">Imperium</h2>
+        <p id="meaning">Güç, otorite</p>
+        <img id="wordImage" src="" alt="" style="max-width: 100%; display: none;">
+    </div>
 
+    <div class="dropdown">
+        <button class="dropdown-toggle" onclick="toggleDropdown('kelime-kontrolu')">Kelime Kontrolü</button>
+        <div class="dropdown-menu" id="kelime-kontrolu">
+            <button onclick="nextWord()">Sonraki Kelime</button>
+            <button onclick="markAsLearned()">Öğrenildi</button>
+            <button onclick="speakWord()">Dinle</button>
+        </div>
+    </div>
+
+    <div class="dropdown">
+        <button class="dropdown-toggle" onclick="toggleDropdown('ayarlar')">Ayarlar</button>
+        <div class="dropdown-menu" id="ayarlar">
+            <button onclick="setReminder()">Hatırlatma Ayarla (5 sn)</button>
+            <button onclick="setCustomReminder()">Zamanı Ayarla</button>
+            <button onclick="setDailyGoal()">Günlük Hedef Belirle</button>
+            <button onclick="checkDailyGoal()">Hedefi Kontrol Et</button>
+        </div>
+    </div>
+
+    <div class="dropdown">
+        <button class="dropdown-toggle" onclick="toggleDropdown('test-istatistik')">Test ve İstatistik</button>
+        <div class="dropdown-menu" id="test-istatistik">
+            <button onclick="startQuiz(true)">Çoktan Seçmeli Test</button>
+            <button onclick="startQuiz(false)">Yazılı Test</button>
+            <button onclick="showDetailedStats()">Detaylı İstatistikler</button>
+            <button onclick="calculateDifficulty()">Zor Kelimeleri Bul</button>
+        </div>
+    </div>
+
+    <div class="dropdown">
+        <button class="dropdown-toggle" onclick="toggleDropdown('diger')">Diğer</button>
+        <div class="dropdown-menu" id="diger">
+            <button onclick="addNewWord()">Yeni Kelime Ekle</button>
+            <button id="resetButton" onclick="resetProgress()">İlerlemeyi Sıfırla</button>
+            <button onclick="toggleTheme()">Tema Değiştir</button>
+        </div>
+    </div>
+
+    <p id="reminderStatus"></p>
+    <div>
+        <input type="text" id="search" placeholder="Kelime ara" onkeyup="searchWord()">
+    </div>
+    <div class="category-buttons">
+        <h3>Kategori Seç</h3>
+        <button class="category-btn" onclick="filterByCategory('Hepsi')">Hepsi</button>
+        <button class="category-btn" onclick="filterByCategory('Siyasi')">Siyasi</button>
+        <button class="category-btn" onclick="filterByCategory('Askeri')">Askeri</button>
+        <button class="category-btn" onclick="filterByCategory('Günlük Yaşam')">Günlük Yaşam</button>
+    </div>
+
+    <div>
+        <h3>Zamanlanmış Hatırlatma</h3>
+        <input type="time" id="reminderTime">
+        <button onclick="setCustomReminder()">Zamanı Ayarla</button>
+        <p id="customReminderStatus"></p>
+    </div>
+
+    <div id="progress">
+        Öğrenilen Kelimeler: <span id="learnedCount">0</span> / <span id="totalCount">0</span>
+    </div>
+
+    <div id="quizSection">
+        <h3 id="quizTitle">Test Modu</h3>
+        <p id="quizWord"></p>
+        <p>Kalan Süre: <span id="timer">60</span> sn</p>
+        <input type="text" id="userAnswer" placeholder="Anlamı yazın">
+        <div id="quizOptions" class="quiz-options"></div>
+        <button id="checkButton" onclick="checkAnswer()">Kontrol Et</button>
+        <button onclick="endQuiz()">Testi Bitir</button>
+        <p id="result"></p>
+        <p>Doğru: <span id="correctCount">0</span> | Yanlış: <span id="wrongCount">0</span></p>
+    </div>
+
+    <div id="stats">
+        <h3>İstatistikler</h3>
+        <p>En Çok Yanlış Yapılan Kelime: <span id="mostWrong"></span></p>
+        <button onclick="closeStats()">Kapat</button>
+    </div>
+    <button onclick="showStats()">İstatistikleri Göster</button>
+
+    <div id="badges">
+        Rozetler: <span id="badgeList">Henüz rozet yok</span>
+    </div>
+
+    <script>
 
         // 200 Kelimelik Tam Liste (Önceki listeden aynı)
         const words = [
