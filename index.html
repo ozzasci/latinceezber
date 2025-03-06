@@ -5,101 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Roma Latince Kelime Ezber</title>
     <style>
-        body {
-           font-family: Arial, sans-serif;
-        text-align: center;
-        background-color: #f4f4f4;
-        padding: 20px;
-        transition: background-color 0.3s, color 0.3s;
-        }
-        body.dark {
-        background-color: #333;
-        color: #fff;
-    }
-        .card {
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-        .card {
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-.card:hover {
-    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
-}
-        .card {
-            background-color: white;
-            width: 300px;
-            margin: 20px auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-        .card:hover {
-            background-color: #e0e0e0;
-        }
-        .dark .card {
-            background-color: #444;
-            border-color: #666;
-        }
-        .dark .card:hover {
-            background-color: #555;
-        }
-        #meaning {
-            display: none;
-            color: #555;
-        }
-        button {
-            padding: 10px 20px;
-            margin: 5px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            transition: background-color 0.3s, box-shadow 0.3s;
-        }
-        button:hover {
-            background-color: #45a049;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        }
-        #resetButton {
-            background-color: #f44336;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-        #resetButton:hover {
-            background-color: #d32f2f;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        }
-        input[type="time"], input[type="text"], select {
-            padding: 5px;
-            margin: 5px;
-        }
-        #progress, #quizSection, #stats {
-            margin-top: 20px;
-            font-size: 18px;
-        }
-        #quizSection, #stats {
-            display: none;
-        }
-        #result {
-            color: #333;
-        }
-        #timer {
-            color: #f44336;
-            font-weight: bold;
-        }
-        #badges {
-            margin-top: 20px;
-            color: #FFD700;
-        }
-        <input type="color" id="meaningColor" onchange="changeMeaningColor(this.value)">
-<script>
-    function changeMeaningColor(color) {
-        document.getElementById("meaning").style.color = color;
-    }
-</script>
-        body {
+ body {
         font-family: Arial, sans-serif;
         text-align: center;
         background-color: #f4f4f4;
@@ -111,56 +17,79 @@
         color: #fff;
     }
 
-    /* Buton Grubu Stili */
-    .button-group {
-        margin: 20px 0;
-        padding: 15px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        background-color: #f9f9f9;
-        text-align: left; /* Başlık ve butonlar sola hizalı */
-        max-width: 600px; /* Daha dar bir alan için */
-        margin-left: auto;
-        margin-right: auto;
+    /* Dropdown Stili */
+    .dropdown {
+        margin: 10px auto;
+        max-width: 600px;
+        position: relative;
+        display: inline-block;
     }
 
-    .button-group h3 {
-        margin: 0 0 10px 0;
-        font-size: 18px;
-        color: #333;
-    }
-
-    .dark .button-group {
-        background-color: #444;
-        border-color: #666;
-    }
-
-    .dark .button-group h3 {
-        color: #fff;
-    }
-
-    /* Buton Stilleri (Mevcut stilleri iyileştirme) */
-    button {
-        padding: 10px 20px;
-        margin: 5px;
+    .dropdown-toggle {
+        padding: 12px 20px;
         background-color: #4CAF50;
         color: white;
         border: none;
         border-radius: 5px;
         cursor: pointer;
         box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        transition: background-color 0.3s, box-shadow 0.3s, transform 0.2s;
-        display: inline-block; /* Yan yana dizilim için */
+        transition: background-color 0.3s, box-shadow 0.3s;
+        width: 200px; /* Sabit genişlik */
+        text-align: left;
     }
 
-    button:hover {
+    .dropdown-toggle:hover {
         background-color: #45a049;
         box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        transform: translateY(-2px); /* Hafif yükselme efekti */
+    }
+
+    .dropdown-menu {
+        display: none; /* Varsayılan olarak gizli */
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        width: 200px;
+        z-index: 1000;
+    }
+
+    .dark .dropdown-menu {
+        background-color: #444;
+        border-color: #666;
+    }
+
+    .dropdown-menu button {
+        display: block; /* Dikey sıralama */
+        width: 100%;
+        padding: 10px;
+        margin: 0;
+        background-color: transparent;
+        color: #333;
+        border: none;
+        border-radius: 0;
+        text-align: left;
+        box-shadow: none;
+        transition: background-color 0.2s;
+    }
+
+    .dark .dropdown-menu button {
+        color: #fff;
+    }
+
+    .dropdown-menu button:hover {
+        background-color: #e0e0e0;
+    }
+
+    .dark .dropdown-menu button:hover {
+        background-color: #555;
     }
 
     #resetButton {
         background-color: #f44336;
+        color: white;
     }
 
     #resetButton:hover {
@@ -169,12 +98,8 @@
 
     /* Mobil uyumluluk */
     @media (max-width: 600px) {
-        .button-group {
-            padding: 10px;
-        }
-        button {
-            width: 100%; /* Tam genişlik */
-            margin: 5px 0;
+        .dropdown-toggle, .dropdown-menu {
+            width: 100%;
         }
     }
     </style>
@@ -210,15 +135,51 @@
     <button onclick="showDetailedStats()">Detaylı İstatistikler</button>
     <button onclick="calculateDifficulty()">Zor Kelimeleri Bul</button>
 </div>
-
-<div class="button-group">
-    <h3>Diğer</h3>
-    <button onclick="addNewWord()">Yeni Kelime Ekle</button>
-    <button id="resetButton" onclick="resetProgress()">İlerlemeyi Sıfırla</button>
-    <button onclick="toggleTheme()">Tema Değiştir</button>
+<div class="card" id="card" onclick="toggleMeaning()">
+    <h2 id="word">Imperium</h2>
+    <p id="meaning">Güç, otorite</p>
+    <img id="wordImage" src="" alt="" style="max-width: 100%; display: none;">
 </div>
 
-<!-- Mevcut diğer bölümler (arama, kategori seçimi, ilerleme vs.) aynı kalabilir -->
+<!-- Açılır Menüler -->
+<div class="dropdown">
+    <button class="dropdown-toggle" onclick="toggleDropdown('kelime-kontrolu')">Kelime Kontrolü</button>
+    <div class="dropdown-menu" id="kelime-kontrolu">
+        <button onclick="nextWord()">Sonraki Kelime</button>
+        <button onclick="markAsLearned()">Öğrenildi</button>
+        <button onclick="speakWord()">Dinle</button>
+    </div>
+</div>
+
+<div class="dropdown">
+    <button class="dropdown-toggle" onclick="toggleDropdown('ayarlar')">Ayarlar</button>
+    <div class="dropdown-menu" id="ayarlar">
+        <button onclick="setReminder()">Hatırlatma Ayarla (5 sn)</button>
+        <button onclick="setCustomReminder()">Zamanı Ayarla</button>
+        <button onclick="setDailyGoal()">Günlük Hedef Belirle</button>
+        <button onclick="checkDailyGoal()">Hedefi Kontrol Et</button>
+    </div>
+</div>
+
+<div class="dropdown">
+    <button class="dropdown-toggle" onclick="toggleDropdown('test-istatistik')">Test ve İstatistik</button>
+    <div class="dropdown-menu" id="test-istatistik">
+        <button onclick="startQuiz()">Teste Başla</button>
+        <button onclick="showDetailedStats()">Detaylı İstatistikler</button>
+        <button onclick="calculateDifficulty()">Zor Kelimeleri Bul</button>
+    </div>
+</div>
+
+<div class="dropdown">
+    <button class="dropdown-toggle" onclick="toggleDropdown('diger')">Diğer</button>
+    <div class="dropdown-menu" id="diger">
+        <button onclick="addNewWord()">Yeni Kelime Ekle</button>
+        <button id="resetButton" onclick="resetProgress()">İlerlemeyi Sıfırla</button>
+        <button onclick="toggleTheme()">Tema Değiştir</button>
+    </div>
+</div>
+
+<!-- Mevcut diğer bölümler (arama, kategori seçimi vs.) aynı kalabilir -->
 <p id="reminderStatus"></p>
 <div>
     <input type="text" id="search" placeholder="Kelime ara" onkeyup="searchWord()">
@@ -232,6 +193,7 @@
         <option value="Günlük Yaşam">Günlük Yaşam</option>
     </select>
 </div>
+
 <!-- ... diğer HTML içeriği ... -->
 
     <!-- Zamanlanmış Hatırlatma -->
@@ -798,6 +760,48 @@ function checkDailyGoal() {
     const learnedToday = words.filter(w => w.learned && new Date().toDateString() === new Date().toDateString()).length;
     alert(`Hedef: ${goal}\nBugün Öğrenilen: ${learnedToday}`);
 }
+        function toggleDropdown(id) {
+        const menu = document.getElementById(id);
+        const isVisible = menu.style.display === "block";
+        // Tüm menüleri kapat
+        document.querySelectorAll(".dropdown-menu").forEach(m => m.style.display = "none");
+        // Seçilen menüyü aç/kapat
+        if (!isVisible) {
+            menu.style.display = "block";
+        }
+    }
+
+    // Dışarı tıklayınca menüleri kapat
+    document.addEventListener("click", function(event) {
+        if (!event.target.closest(".dropdown")) {
+            document.querySelectorAll(".dropdown-menu").forEach(m => m.style.display = "none");
+        }
+    });
+
+    // Mevcut startQuiz ve endQuiz fonksiyonlarını güncelle
+    function startQuiz() {
+        document.getElementById("card").style.display = "none";
+        document.getElementById("quizSection").style.display = "block";
+        document.querySelectorAll(".dropdown-toggle").forEach(btn => btn.disabled = true);
+        document.querySelectorAll(".dropdown-menu button").forEach(btn => btn.disabled = true);
+        correctCount = 0;
+        wrongCount = 0;
+        document.getElementById("correctCount").innerText = correctCount;
+        document.getElementById("wrongCount").innerText = wrongCount;
+        document.getElementById("result").innerText = "";
+        document.getElementById("userAnswer").value = "";
+        nextQuizWord();
+    }
+
+    function endQuiz() {
+        clearInterval(timerInterval);
+        document.getElementById("card").style.display = "block";
+        document.getElementById("quizSection").style.display = "none";
+        document.querySelectorAll(".dropdown-toggle").forEach(btn => btn.disabled = false);
+        document.querySelectorAll(".dropdown-menu button").forEach(btn => btn.disabled = false);
+        alert(`Test bitti!\nDoğru: ${correctCount}\nYanlış: ${wrongCount}`);
+        displayWord();
+    }
     </script>
 </body>
 </html>
