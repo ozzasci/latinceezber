@@ -116,6 +116,8 @@
     <button onclick="showDetailedStats()">Detaylı İstatistikler</button>
     <button onclick="startQuiz()">Teste Başla</button>
     <button onclick="calculateDifficulty()">Zor Kelimeleri Bul</button>
+    <button onclick="setDailyGoal()">Günlük Hedef Belirle</button>
+<button onclick="checkDailyGoal()">Hedefi Kontrol Et</button>
     <p id="reminderStatus"></p>
 
     <!-- Tema Seçimi -->
@@ -664,6 +666,19 @@ function showDetailedStats() {
     });
     const hardest = words.sort((a, b) => b.difficulty - a.difficulty)[0];
     alert(`En Zor Kelime: ${hardest.latin} (Zorluk: ${hardest.difficulty.toFixed(2)})`);
+}
+        function setDailyGoal() {
+    const goal = parseInt(prompt("Günlük kelime hedefini girin:"));
+    if (goal) {
+        localStorage.setItem("dailyGoal", goal);
+        alert(`Günlük hedef: ${goal} kelime`);
+    }
+}
+
+function checkDailyGoal() {
+    const goal = localStorage.getItem("dailyGoal") || 0;
+    const learnedToday = words.filter(w => w.learned && new Date().toDateString() === new Date().toDateString()).length;
+    alert(`Hedef: ${goal}\nBugün Öğrenilen: ${learnedToday}`);
 }
     </script>
 </body>
