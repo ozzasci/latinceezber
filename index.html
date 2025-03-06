@@ -112,6 +112,7 @@
     <button onclick="setReminder()">Hatırlatma Ayarla (5 sn)</button>
     <button onclick="markAsLearned()">Öğrenildi</button>
     <button onclick="speakWord()">Dinle</button>
+    <button onclick="addNewWord()">Yeni Kelime Ekle</button>
     <button onclick="showDetailedStats()">Detaylı İstatistikler</button>
     <button onclick="startQuiz()">Teste Başla</button>
     <p id="reminderStatus"></p>
@@ -635,6 +636,17 @@ function showDetailedStats() {
     const learned = words.filter(w => w.learned).length;
     const accuracy = (correctCount / (correctCount + wrongCount) * 100).toFixed(2) || 0;
     alert(`Detaylı İstatistikler:\nÖğrenilen: ${learned}\nDoğru: ${correctCount}\nYanlış: ${wrongCount}\nBaşarı: %${accuracy}`);
+}
+        function addNewWord() {
+    const latin = prompt("Latince kelimeyi girin:");
+    const meaning = prompt("Anlamını girin:");
+    const category = prompt("Kategoriyi girin (Siyasi, Askeri, Günlük Yaşam):");
+    if (latin && meaning && category) {
+        words.push({ latin, meaning, learned: false, category, wrongAttempts: 0, correctAttempts: 0, image: "" });
+        localStorage.setItem("learnedWords", JSON.stringify(words));
+        updateProgress();
+        alert("Kelime eklendi!");
+    }
 }
         // Oyunlaştırma (Rozetler)
         function updateBadges() {
