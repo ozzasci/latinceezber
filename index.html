@@ -132,6 +132,35 @@
             padding: 5px;
             margin: 5px;
         }
+        category-buttons {
+    margin: 20px auto;
+    max-width: 600px;
+}
+
+.category-btn {
+    padding: 10px 20px;
+    margin: 5px;
+    background-color: #2196F3; /* Mavi ton, farklı bir renk olsun */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.category-btn:hover {
+    background-color: #1976D2;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.dark .category-btn {
+    background-color: #1E88E5;
+}
+
+.dark .category-btn:hover {
+    background-color: #1565C0;
+}
 
         /* Mobil Uyumluluk */
         @media (max-width: 600px) {
@@ -194,15 +223,13 @@
     <div>
         <input type="text" id="search" placeholder="Kelime ara" onkeyup="searchWord()">
     </div>
-    <div>
-        <h3>Kategori Seç</h3>
-        <select id="categoryFilter" onchange="filterByCategory(this.value)">
-            <option value="Hepsi">Hepsi</option>
-            <option value="Siyasi">Siyasi</option>
-            <option value="Askeri">Askeri</option>
-            <option value="Günlük Yaşam">Günlük Yaşam</option>
-        </select>
-    </div>
+   <div class="category-buttons">
+    <h3>Kategori Seç</h3>
+    <button class="category-btn" onclick="filterByCategory('Hepsi')">Hepsi</button>
+    <button class="category-btn" onclick="filterByCategory('Siyasi')">Siyasi</button>
+    <button class="category-btn" onclick="filterByCategory('Askeri')">Askeri</button>
+    <button class="category-btn" onclick="filterByCategory('Günlük Yaşam')">Günlük Yaşam</button>
+</div>
 
     <div>
         <h3>Zamanlanmış Hatırlatma</h3>
