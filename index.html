@@ -99,45 +99,140 @@
         document.getElementById("meaning").style.color = color;
     }
 </script>
+        body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: #f4f4f4;
+        padding: 20px;
+        transition: background-color 0.3s, color 0.3s;
+    }
+    body.dark {
+        background-color: #333;
+        color: #fff;
+    }
+
+    /* Buton Grubu Stili */
+    .button-group {
+        margin: 20px 0;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        text-align: left; /* Başlık ve butonlar sola hizalı */
+        max-width: 600px; /* Daha dar bir alan için */
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .button-group h3 {
+        margin: 0 0 10px 0;
+        font-size: 18px;
+        color: #333;
+    }
+
+    .dark .button-group {
+        background-color: #444;
+        border-color: #666;
+    }
+
+    .dark .button-group h3 {
+        color: #fff;
+    }
+
+    /* Buton Stilleri (Mevcut stilleri iyileştirme) */
+    button {
+        padding: 10px 20px;
+        margin: 5px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        transition: background-color 0.3s, box-shadow 0.3s, transform 0.2s;
+        display: inline-block; /* Yan yana dizilim için */
+    }
+
+    button:hover {
+        background-color: #45a049;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        transform: translateY(-2px); /* Hafif yükselme efekti */
+    }
+
+    #resetButton {
+        background-color: #f44336;
+    }
+
+    #resetButton:hover {
+        background-color: #d32f2f;
+    }
+
+    /* Mobil uyumluluk */
+    @media (max-width: 600px) {
+        .button-group {
+            padding: 10px;
+        }
+        button {
+            width: 100%; /* Tam genişlik */
+            margin: 5px 0;
+        }
+    }
     </style>
 </head>
 <body class="light">
     <h1>Roma Latince Kelime Ezber</h1>
-    <div class="card" id="card" onclick="toggleMeaning()">
-        <h2 id="word">Imperium</h2>
-        <p id="meaning">Güç, otorite</p>
-        <img id="wordImage" src="" alt="" style="max-width: 100%; display: none;">
-    </div>
+    <!-- Mevcut kart ve diğer içerik aynı kalabilir -->
+<div class="card" id="card" onclick="toggleMeaning()">
+    <h2 id="word">Imperium</h2>
+    <p id="meaning">Güç, otorite</p>
+    <img id="wordImage" src="" alt="" style="max-width: 100%; display: none;">
+</div>
+
+<!-- Buton Grupları -->
+<div class="button-group">
+    <h3>Kelime Kontrolü</h3>
     <button onclick="nextWord()">Sonraki Kelime</button>
-    <button onclick="setReminder()">Hatırlatma Ayarla (5 sn)</button>
     <button onclick="markAsLearned()">Öğrenildi</button>
     <button onclick="speakWord()">Dinle</button>
-    <button onclick="addNewWord()">Yeni Kelime Ekle</button>
-    <button onclick="showDetailedStats()">Detaylı İstatistikler</button>
-    <button onclick="startQuiz()">Teste Başla</button>
-    <button onclick="calculateDifficulty()">Zor Kelimeleri Bul</button>
+</div>
+
+<div class="button-group">
+    <h3>Ayarlar</h3>
+    <button onclick="setReminder()">Hatırlatma Ayarla (5 sn)</button>
+    <button onclick="setCustomReminder()">Zamanı Ayarla</button>
     <button onclick="setDailyGoal()">Günlük Hedef Belirle</button>
-<button onclick="checkDailyGoal()">Hedefi Kontrol Et</button>
-    <p id="reminderStatus"></p>
+    <button onclick="checkDailyGoal()">Hedefi Kontrol Et</button>
+</div>
 
-    <!-- Tema Seçimi -->
+<div class="button-group">
+    <h3>Test ve İstatistik</h3>
+    <button onclick="startQuiz()">Teste Başla</button>
+    <button onclick="showDetailedStats()">Detaylı İstatistikler</button>
+    <button onclick="calculateDifficulty()">Zor Kelimeleri Bul</button>
+</div>
+
+<div class="button-group">
+    <h3>Diğer</h3>
+    <button onclick="addNewWord()">Yeni Kelime Ekle</button>
+    <button id="resetButton" onclick="resetProgress()">İlerlemeyi Sıfırla</button>
     <button onclick="toggleTheme()">Tema Değiştir</button>
+</div>
 
-    <!-- Kelime Arama -->
-    <div>
-        <input type="text" id="search" placeholder="Kelime ara" onkeyup="searchWord()">
-    </div>
-
-    <!-- Kategori Seçimi -->
-    <div>
-        <h3>Kategori Seç</h3>
-        <select id="categoryFilter" onchange="filterByCategory(this.value)">
-            <option value="Hepsi">Hepsi</option>
-            <option value="Siyasi">Siyasi</option>
-            <option value="Askeri">Askeri</option>
-            <option value="Günlük Yaşam">Günlük Yaşam</option>
-        </select>
-    </div>
+<!-- Mevcut diğer bölümler (arama, kategori seçimi, ilerleme vs.) aynı kalabilir -->
+<p id="reminderStatus"></p>
+<div>
+    <input type="text" id="search" placeholder="Kelime ara" onkeyup="searchWord()">
+</div>
+<div>
+    <h3>Kategori Seç</h3>
+    <select id="categoryFilter" onchange="filterByCategory(this.value)">
+        <option value="Hepsi">Hepsi</option>
+        <option value="Siyasi">Siyasi</option>
+        <option value="Askeri">Askeri</option>
+        <option value="Günlük Yaşam">Günlük Yaşam</option>
+    </select>
+</div>
+<!-- ... diğer HTML içeriği ... -->
 
     <!-- Zamanlanmış Hatırlatma -->
     <div>
@@ -673,6 +768,29 @@ function showDetailedStats() {
         localStorage.setItem("dailyGoal", goal);
         alert(`Günlük hedef: ${goal} kelime`);
     }
+            function startQuiz() {
+    document.getElementById("card").style.display = "none";
+    document.getElementById("quizSection").style.display = "block";
+    // Tüm butonları devre dışı bırak (quiz içindekiler hariç)
+    document.querySelectorAll(".button-group button:not(#quizSection button)").forEach(btn => btn.disabled = true);
+    correctCount = 0;
+    wrongCount = 0;
+    document.getElementById("correctCount").innerText = correctCount;
+    document.getElementById("wrongCount").innerText = wrongCount;
+    document.getElementById("result").innerText = "";
+    document.getElementById("userAnswer").value = "";
+    nextQuizWord();
+}
+
+function endQuiz() {
+    clearInterval(timerInterval);
+    document.getElementById("card").style.display = "block";
+    document.getElementById("quizSection").style.display = "none";
+    // Tüm butonları tekrar aktif et
+    document.querySelectorAll(".button-group button").forEach(btn => btn.disabled = false);
+    alert(`Test bitti!\nDoğru: ${correctCount}\nYanlış: ${wrongCount}`);
+    displayWord();
+}
 }
 
 function checkDailyGoal() {
