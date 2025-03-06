@@ -270,11 +270,10 @@
     </div>
 
     <script>
-
-        // 200 Kelimelik Tam Liste (Önceki listeden aynı)
         const words = [
-            { latin: "Imperium", meaning: "Güç, otorite", learned: false, category: "Siyasi", wrongAttempts: 0, correctAttempts: 0, image: "" },
-           { latin: "Caesar", meaning: "Sezar, imparator", learned: false, category: "Siyasi", wrongAttempts: 0, correctAttempts: 0, image: "" },
+            { latin: "Imperium", meaning: "Güç, otorite", learned: false, category: "Siyasi", wrongAttempts: 0, correctAttempts: 0, image: "", learnedDate: null },
+            { latin: "Legio", meaning: "Lejyon", learned: false, category: "Askeri", wrongAttempts: 0, correctAttempts: 0, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Roman_legionary.jpg/320px-Roman_legionary.jpg", learnedDate: null },
+            { latin: "Caesar", meaning: "Sezar, imparator", learned: false, category: "Siyasi", wrongAttempts: 0, correctAttempts: 0, image: "" },
             { latin: "Augustus", meaning: "Yüce, ilk imparator unvanı", learned: false, category: "Siyasi", wrongAttempts: 0, correctAttempts: 0, image: "" },
             { latin: "Senatus", meaning: "Senato", learned: false, category: "Siyasi", wrongAttempts: 0, correctAttempts: 0, image: "" },
             { latin: "Consul", meaning: "Konsül", learned: false, category: "Siyasi", wrongAttempts: 0, correctAttempts: 0, image: "" },
@@ -474,8 +473,9 @@
             { latin: "Sepulcrum", meaning: "Mezar", learned: false, category: "Günlük Yaşam", wrongAttempts: 0, correctAttempts: 0, image: "" },
             { latin: "Monumentum", meaning: "Anıt", learned: false, category: "Günlük Yaşam", wrongAttempts: 0, correctAttempts: 0, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Arch_of_Constantine.jpg/320px-Arch_of_Constantine.jpg" }   
         ];
+            // Tam liste için orijinal 200 kelimeyi buraya ekleyebilirsiniz.
 
-let currentIndex = 0;
+        let currentIndex = 0;
         let correctCount = 0;
         let wrongCount = 0;
         let timerInterval;
