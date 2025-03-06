@@ -5,198 +5,205 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Roma Latince Kelime Ezber</title>
     <style>
- body {
-        font-family: Arial, sans-serif;
-        text-align: center;
-        background-color: #f4f4f4;
-        padding: 20px;
-        transition: background-color 0.3s, color 0.3s;
-    }
-    body.dark {
-        background-color: #333;
-        color: #fff;
-    }
-
-    /* Dropdown Stili */
-    .dropdown {
-        margin: 10px auto;
-        max-width: 600px;
-        position: relative;
-        display: inline-block;
-    }
-
-    .dropdown-toggle {
-        padding: 12px 20px;
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        transition: background-color 0.3s, box-shadow 0.3s;
-        width: 200px; /* Sabit genişlik */
-        text-align: left;
-    }
-
-    .dropdown-toggle:hover {
-        background-color: #45a049;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    }
-
-    .dropdown-menu {
-        display: none; /* Varsayılan olarak gizli */
-        position: absolute;
-        top: 100%;
-        left: 0;
-        background-color: #fff;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        width: 200px;
-        z-index: 1000;
-    }
-
-    .dark .dropdown-menu {
-        background-color: #444;
-        border-color: #666;
-    }
-
-    .dropdown-menu button {
-        display: block; /* Dikey sıralama */
-        width: 100%;
-        padding: 10px;
-        margin: 0;
-        background-color: transparent;
-        color: #333;
-        border: none;
-        border-radius: 0;
-        text-align: left;
-        box-shadow: none;
-        transition: background-color 0.2s;
-    }
-
-    .dark .dropdown-menu button {
-        color: #fff;
-    }
-
-    .dropdown-menu button:hover {
-        background-color: #e0e0e0;
-    }
-
-    .dark .dropdown-menu button:hover {
-        background-color: #555;
-    }
-
-    #resetButton {
-        background-color: #f44336;
-        color: white;
-    }
-
-    #resetButton:hover {
-        background-color: #d32f2f;
-    }
-
-    /* Mobil uyumluluk */
-    @media (max-width: 600px) {
-        .dropdown-toggle, .dropdown-menu {
-            width: 100%;
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
         }
-    }
+        body.dark {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .card {
+            background-color: white;
+            width: 300px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .card:hover {
+            background-color: #e0e0e0;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+        .dark .card {
+            background-color: #444;
+            border-color: #666;
+        }
+        .dark .card:hover {
+            background-color: #555;
+        }
+        #meaning {
+            display: none;
+            color: #555;
+        }
+
+        /* Dropdown Stili */
+        .dropdown {
+            margin: 10px auto;
+            max-width: 600px;
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-toggle {
+            padding: 12px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: background-color 0.3s, box-shadow 0.3s;
+            width: 200px;
+            text-align: left;
+        }
+        .dropdown-toggle:hover {
+            background-color: #45a049;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 200px;
+            z-index: 1000;
+        }
+        .dark .dropdown-menu {
+            background-color: #444;
+            border-color: #666;
+        }
+        .dropdown-menu button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 0;
+            background-color: transparent;
+            color: #333;
+            border: none;
+            border-radius: 0;
+            text-align: left;
+            box-shadow: none;
+            transition: background-color 0.2s;
+        }
+        .dark .dropdown-menu button {
+            color: #fff;
+        }
+        .dropdown-menu button:hover {
+            background-color: #e0e0e0;
+        }
+        .dark .dropdown-menu button:hover {
+            background-color: #555;
+        }
+        #resetButton {
+            background-color: #f44336;
+            color: white;
+        }
+        #resetButton:hover {
+            background-color: #d32f2f;
+        }
+
+        /* Diğer Bölümler */
+        #progress, #quizSection, #stats {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        #quizSection, #stats {
+            display: none;
+        }
+        #timer {
+            color: #f44336;
+            font-weight: bold;
+        }
+        #badges {
+            margin-top: 20px;
+            color: #FFD700;
+        }
+        input[type="time"], input[type="text"], select {
+            padding: 5px;
+            margin: 5px;
+        }
+
+        /* Mobil Uyumluluk */
+        @media (max-width: 600px) {
+            .dropdown-toggle, .dropdown-menu {
+                width: 100%;
+            }
+            .card {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body class="light">
     <h1>Roma Latince Kelime Ezber</h1>
-    <!-- Mevcut kart ve diğer içerik aynı kalabilir -->
-<div class="card" id="card" onclick="toggleMeaning()">
-    <h2 id="word">Imperium</h2>
-    <p id="meaning">Güç, otorite</p>
-    <img id="wordImage" src="" alt="" style="max-width: 100%; display: none;">
-</div>
-
-<!-- Buton Grupları -->
-<div class="button-group">
-    <h3>Kelime Kontrolü</h3>
-    <button onclick="nextWord()">Sonraki Kelime</button>
-    <button onclick="markAsLearned()">Öğrenildi</button>
-    <button onclick="speakWord()">Dinle</button>
-</div>
-
-<div class="button-group">
-    <h3>Ayarlar</h3>
-    <button onclick="setReminder()">Hatırlatma Ayarla (5 sn)</button>
-    <button onclick="setCustomReminder()">Zamanı Ayarla</button>
-    <button onclick="setDailyGoal()">Günlük Hedef Belirle</button>
-    <button onclick="checkDailyGoal()">Hedefi Kontrol Et</button>
-</div>
-
-<div class="button-group">
-    <h3>Test ve İstatistik</h3>
-    <button onclick="startQuiz()">Teste Başla</button>
-    <button onclick="showDetailedStats()">Detaylı İstatistikler</button>
-    <button onclick="calculateDifficulty()">Zor Kelimeleri Bul</button>
-</div>
-<div class="card" id="card" onclick="toggleMeaning()">
-    <h2 id="word">Imperium</h2>
-    <p id="meaning">Güç, otorite</p>
-    <img id="wordImage" src="" alt="" style="max-width: 100%; display: none;">
-</div>
-
-<!-- Açılır Menüler -->
-<div class="dropdown">
-    <button class="dropdown-toggle" onclick="toggleDropdown('kelime-kontrolu')">Kelime Kontrolü</button>
-    <div class="dropdown-menu" id="kelime-kontrolu">
-        <button onclick="nextWord()">Sonraki Kelime</button>
-        <button onclick="markAsLearned()">Öğrenildi</button>
-        <button onclick="speakWord()">Dinle</button>
+    <div class="card" id="card" onclick="toggleMeaning()">
+        <h2 id="word">Imperium</h2>
+        <p id="meaning">Güç, otorite</p>
+        <img id="wordImage" src="" alt="" style="max-width: 100%; display: none;">
     </div>
-</div>
 
-<div class="dropdown">
-    <button class="dropdown-toggle" onclick="toggleDropdown('ayarlar')">Ayarlar</button>
-    <div class="dropdown-menu" id="ayarlar">
-        <button onclick="setReminder()">Hatırlatma Ayarla (5 sn)</button>
-        <button onclick="setCustomReminder()">Zamanı Ayarla</button>
-        <button onclick="setDailyGoal()">Günlük Hedef Belirle</button>
-        <button onclick="checkDailyGoal()">Hedefi Kontrol Et</button>
+    <!-- Açılır Menüler -->
+    <div class="dropdown">
+        <button class="dropdown-toggle" onclick="toggleDropdown('kelime-kontrolu')">Kelime Kontrolü</button>
+        <div class="dropdown-menu" id="kelime-kontrolu">
+            <button onclick="nextWord()">Sonraki Kelime</button>
+            <button onclick="markAsLearned()">Öğrenildi</button>
+            <button onclick="speakWord()">Dinle</button>
+        </div>
     </div>
-</div>
 
-<div class="dropdown">
-    <button class="dropdown-toggle" onclick="toggleDropdown('test-istatistik')">Test ve İstatistik</button>
-    <div class="dropdown-menu" id="test-istatistik">
-        <button onclick="startQuiz()">Teste Başla</button>
-        <button onclick="showDetailedStats()">Detaylı İstatistikler</button>
-        <button onclick="calculateDifficulty()">Zor Kelimeleri Bul</button>
+    <div class="dropdown">
+        <button class="dropdown-toggle" onclick="toggleDropdown('ayarlar')">Ayarlar</button>
+        <div class="dropdown-menu" id="ayarlar">
+            <button onclick="setReminder()">Hatırlatma Ayarla (5 sn)</button>
+            <button onclick="setCustomReminder()">Zamanı Ayarla</button>
+            <button onclick="setDailyGoal()">Günlük Hedef Belirle</button>
+            <button onclick="checkDailyGoal()">Hedefi Kontrol Et</button>
+        </div>
     </div>
-</div>
 
-<div class="dropdown">
-    <button class="dropdown-toggle" onclick="toggleDropdown('diger')">Diğer</button>
-    <div class="dropdown-menu" id="diger">
-        <button onclick="addNewWord()">Yeni Kelime Ekle</button>
-        <button id="resetButton" onclick="resetProgress()">İlerlemeyi Sıfırla</button>
-        <button onclick="toggleTheme()">Tema Değiştir</button>
+    <div class="dropdown">
+        <button class="dropdown-toggle" onclick="toggleDropdown('test-istatistik')">Test ve İstatistik</button>
+        <div class="dropdown-menu" id="test-istatistik">
+            <button onclick="startQuiz()">Teste Başla</button>
+            <button onclick="showDetailedStats()">Detaylı İstatistikler</button>
+            <button onclick="calculateDifficulty()">Zor Kelimeleri Bul</button>
+        </div>
     </div>
-</div>
 
-<!-- Mevcut diğer bölümler (arama, kategori seçimi vs.) aynı kalabilir -->
-<p id="reminderStatus"></p>
-<div>
-    <input type="text" id="search" placeholder="Kelime ara" onkeyup="searchWord()">
-</div>
-<div>
-    <h3>Kategori Seç</h3>
-    <select id="categoryFilter" onchange="filterByCategory(this.value)">
-        <option value="Hepsi">Hepsi</option>
-        <option value="Siyasi">Siyasi</option>
-        <option value="Askeri">Askeri</option>
-        <option value="Günlük Yaşam">Günlük Yaşam</option>
-    </select>
-</div>
+    <div class="dropdown">
+        <button class="dropdown-toggle" onclick="toggleDropdown('diger')">Diğer</button>
+        <div class="dropdown-menu" id="diger">
+            <button onclick="addNewWord()">Yeni Kelime Ekle</button>
+            <button id="resetButton" onclick="resetProgress()">İlerlemeyi Sıfırla</button>
+            <button onclick="toggleTheme()">Tema Değiştir</button>
+        </div>
+    </div>
 
-<!-- ... diğer HTML içeriği ... -->
+    <p id="reminderStatus"></p>
+    <div>
+        <input type="text" id="search" placeholder="Kelime ara" onkeyup="searchWord()">
+    </div>
+    <div>
+        <h3>Kategori Seç</h3>
+        <select id="categoryFilter" onchange="filterByCategory(this.value)">
+            <option value="Hepsi">Hepsi</option>
+            <option value="Siyasi">Siyasi</option>
+            <option value="Askeri">Askeri</option>
+            <option value="Günlük Yaşam">Günlük Yaşam</option>
+        </select>
+    </div>
 
-    <!-- Zamanlanmış Hatırlatma -->
     <div>
         <h3>Zamanlanmış Hatırlatma</h3>
         <input type="time" id="reminderTime">
@@ -204,13 +211,143 @@
         <p id="customReminderStatus"></p>
     </div>
 
-    <!-- İlerleme Takibi -->
     <div id="progress">
         Öğrenilen Kelimeler: <span id="learnedCount">0</span> / <span id="totalCount">0</span>
     </div>
-    <button id="resetButton" onclick="resetProgress()">İlerlemeyi Sıfırla</button>
 
-    <!-- Quiz Modu -->
+    <div id="quizSection">
+        <h3>Test Modu</h3>
+        <p id="quizWord"></p>
+        <p>Kalan Süre: <span id="timer">15</span> sn</p>
+        <input type="text" id="userAnswer" placeholder="Anlamdeclare: none;
+        margin: 5px;
+        cursor: pointer;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+    button:hover {
+        background-color: #45a049;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+
+    #resetButton {
+        background-color: #f44336;
+    }
+
+    #resetButton:hover {
+        background-color: #d32f2f;
+    }
+
+    input[type="time"], input[type="text"], select {
+        padding: 5px;
+        margin: 5px;
+    }
+
+    #progress, #quizSection, #stats {
+        margin-top: 20px;
+        font-size: 18px;
+    }
+
+    #quizSection, #stats {
+        display: none;
+    }
+
+    #result {
+        color: #333;
+    }
+
+    #timer {
+        color: #f44336;
+        font-weight: bold;
+    }
+
+    #badges {
+        margin-top: 20px;
+        color: #FFD700;
+    }
+
+    /* Mobil uyumluluk */
+    @media (max-width: 600px) {
+        button {
+            width: 100%;
+            margin: 5px 0;
+        }
+    }
+    </style>
+</head>
+<body class="light">
+    <h1>Roma Latince Kelime Ezber</h1>
+    <div class="card" id="card" onclick="toggleMeaning()">
+        <h2 id="word">Imperium</h2>
+        <p id="meaning">Güç, otorite</p>
+        <img id="wordImage" src="" alt="" style="max-width: 100%; display: none;">
+    </div>
+
+    <!-- Açılır Menüler -->
+    <div class="dropdown">
+        <button class="dropdown-toggle" onclick="toggleDropdown('kelime-kontrolu')">Kelime Kontrolü</button>
+        <div class="dropdown-menu" id="kelime-kontrolu">
+            <button onclick="nextWord()">Sonraki Kelime</button>
+            <button onclick="markAsLearned()">Öğrenildi</button>
+            <button onclick="speakWord()">Dinle</button>
+        </div>
+    </div>
+
+    <div class="dropdown">
+        <button class="dropdown-toggle" onclick="toggleDropdown('ayarlar')">Ayarlar</button>
+        <div class="dropdown-menu" id="ayarlar">
+            <button onclick="setReminder()">Hızlı Hatırlatma (5 sn)</button>
+            <button onclick="setCustomReminder()">Zamanlı Hatırlatma</button>
+            <button onclick="setDailyGoal()">Günlük Hedef Belirle</button>
+            <button onclick="checkDailyGoal()">Hedefi Kontrol Et</button>
+        </div>
+    </div>
+
+    <div class="dropdown">
+        <button class="dropdown-toggle" onclick="toggleDropdown('test-istatistik')">Test ve İstatistik</button>
+        <div class="dropdown-menu" id="test-istatistik">
+            <button onclick="startQuiz()">Teste Başla</button>
+            <button onclick="showDetailedStats()">Detaylı İstatistikler</button>
+            <button onclick="calculateDifficulty()">Zor Kelimeleri Bul</button>
+        </div>
+    </div>
+
+    <div class="dropdown">
+        <button class="dropdown-toggle" onclick="toggleDropdown('diger')">Diğer</button>
+        <div class="dropdown-menu" id="diger">
+            <button onclick="addNewWord()">Yeni Kelime Ekle</button>
+            <button id="resetButton" onclick="resetProgress()">İlerlemeyi Sıfırla</button>
+            <button onclick="toggleTheme()">Tema Değiştir</button>
+        </div>
+    </div>
+
+    <p id="reminderStatus"></p>
+    <div>
+        <input type="text" id="search" placeholder="Kelime ara" onkeyup="searchWord()">
+    </div>
+    <div>
+        <h3>Kategori Seç</h3>
+        <select id="categoryFilter" onchange="filterByCategory(this.value)">
+            <option value="Hepsi">Hepsi</option>
+            <option value="Siyasi">Siyasi</option>
+            <option value="Askeri">Askeri</option>
+            <option value="Günlük Yaşam">Günlük Yaşam</option>
+        </select>
+    </div>
+
+    <div>
+        <h3>Zamanlanmış Hatırlatma</h3>
+        <input type="time" id="reminderTime">
+        <button onclick="setCustomReminder()">Zamanı Ayarla</button>
+        <p id="customReminderStatus"></p>
+    </div>
+
+    <div id="progress">
+        Öğrenilen Kelimeler: <span id="learnedCount">0</span> / <span id="totalCount">0</span>
+    </div>
+
     <div id="quizSection">
         <h3>Test Modu</h3>
         <p id="quizWord"></p>
@@ -222,7 +359,6 @@
         <p>Doğru: <span id="correctCount">0</span> | Yanlış: <span id="wrongCount">0</span></p>
     </div>
 
-    <!-- İstatistikler -->
     <div id="stats">
         <h3>İstatistikler</h3>
         <p>En Çok Yanlış Yapılan Kelime: <span id="mostWrong"></span></p>
@@ -230,7 +366,6 @@
     </div>
     <button onclick="showStats()">İstatistikleri Göster</button>
 
-    <!-- Oyunlaştırma (Rozetler) -->
     <div id="badges">
         Rozetler: <span id="badgeList">Henüz rozet yok</span>
     </div>
@@ -440,13 +575,12 @@
             { latin: "Monumentum", meaning: "Anıt", learned: false, category: "Günlük Yaşam", wrongAttempts: 0, correctAttempts: 0, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Arch_of_Constantine.jpg/320px-Arch_of_Constantine.jpg" }
         ];
 
-        let currentIndex = 0;
+    let currentIndex = 0;
         let correctCount = 0;
         let wrongCount = 0;
         let timerInterval;
         let currentCategory = "Hepsi";
 
-        // Sayfa yüklendiğinde kaydedilmiş verileri yükle
         window.onload = function() {
             const savedWords = JSON.parse(localStorage.getItem("learnedWords"));
             if (savedWords) {
@@ -461,7 +595,6 @@
             displayWord();
         };
 
-        // Kelimeyi göster
         function displayWord() {
             document.getElementById("word").innerText = words[currentIndex].latin;
             document.getElementById("meaning").innerText = words[currentIndex].meaning;
@@ -475,13 +608,11 @@
             }
         }
 
-        // Anlamı göster/gizle
         function toggleMeaning() {
             const meaning = document.getElementById("meaning");
             meaning.style.display = meaning.style.display === "none" ? "block" : "none";
         }
 
-        // Sonraki kelimeye geç
         function nextWord() {
             currentIndex = (currentIndex + 1) % words.length;
             if (currentCategory !== "Hepsi") {
@@ -492,20 +623,17 @@
             displayWord();
         }
 
-        // Sesli telaffuz
         function speakWord() {
             const utterance = new SpeechSynthesisUtterance(words[currentIndex].latin);
-            utterance.lang = "la"; // Yaklaşık Latince telaffuz
+            utterance.lang = "la";
             speechSynthesis.speak(utterance);
         }
 
-        // Tema değiştir
         function toggleTheme() {
             document.body.classList.toggle("dark");
             document.body.classList.toggle("light");
         }
 
-        // Kelime arama
         function searchWord() {
             const query = document.getElementById("search").value.toLowerCase();
             const found = words.find(word => word.latin.toLowerCase().includes(query));
@@ -515,7 +643,6 @@
             }
         }
 
-        // Kategori filtreleme
         function filterByCategory(category) {
             currentCategory = category;
             currentIndex = 0;
@@ -527,7 +654,6 @@
             displayWord();
         }
 
-        // Hızlı hatırlatma (5 saniye, 10 kelime, öğrenilmemiş)
         function setReminder() {
             document.getElementById("reminderStatus").innerText = "Hatırlatma ayarlandı! 5 saniye sonra...";
             setTimeout(() => {
@@ -538,14 +664,12 @@
             }, 5000);
         }
 
-        // Rastgele kelime seç (öğrenilmemişlere odaklan)
         function getRandomWords(count) {
             const unlearned = words.filter(word => !word.learned && (currentCategory === "Hepsi" || word.category === currentCategory));
             const shuffled = unlearned.length > 0 ? unlearned : words.filter(word => currentCategory === "Hepsi" || word.category === currentCategory);
             return shuffled.sort(() => 0.5 - Math.random()).slice(0, Math.min(count, shuffled.length));
         }
 
-        // Zamanlanmış Hatırlatma
         function setCustomReminder() {
             const time = document.getElementById("reminderTime").value;
             if (!time) {
@@ -564,15 +688,9 @@
                 const reminderText = randomWords.map((word, index) => `${index + 1}. ${word.latin} - ${word.meaning}`).join("\n");
                 alert(`Zamanlanmış Hatırlatma:\n${reminderText}`);
                 document.getElementById("customReminderStatus").innerText = "Hatırlatma yapıldı!";
-                setInterval(() => {
-                    const randomWords = getRandomWords(10);
-                    const reminderText = randomWords.map((word, index) => `${index + 1}. ${word.latin} - ${word.meaning}`).join("\n");
-                    alert(`Günlük Hatırlatma:\n${reminderText}`);
-                }, 24 * 60 * 60 * 1000);
             }, timeDiff);
         }
 
-        // Öğrenildi olarak işaretle
         function markAsLearned() {
             if (!words[currentIndex].learned) {
                 words[currentIndex].learned = true;
@@ -586,7 +704,6 @@
             nextWord();
         }
 
-        // İlerleme güncelle
         function updateProgress() {
             const learnedCount = words.filter(word => word.learned).length;
             const totalCount = words.length;
@@ -594,7 +711,6 @@
             document.getElementById("totalCount").innerText = totalCount;
         }
 
-        // İlerlemeyi sıfırla
         function resetProgress() {
             if (confirm("İlerlemeyi sıfırlamak istediğinize emin misiniz?")) {
                 words.forEach(word => {
@@ -610,10 +726,11 @@
             }
         }
 
-        // Quiz Modu Başlat
         function startQuiz() {
             document.getElementById("card").style.display = "none";
             document.getElementById("quizSection").style.display = "block";
+            document.querySelectorAll(".dropdown-toggle").forEach(btn => btn.disabled = true);
+            document.querySelectorAll(".dropdown-menu button").forEach(btn => btn.disabled = true);
             correctCount = 0;
             wrongCount = 0;
             document.getElementById("correctCount").innerText = correctCount;
@@ -623,7 +740,6 @@
             nextQuizWord();
         }
 
-        // Quiz için kelime göster ve zamanlayıcı
         function nextQuizWord() {
             clearInterval(timerInterval);
             const availableWords = words.filter(word => currentCategory === "Hepsi" || word.category === currentCategory);
@@ -648,7 +764,6 @@
             }, 1000);
         }
 
-        // Cevabı kontrol et
         function checkAnswer() {
             clearInterval(timerInterval);
             const userAnswer = document.getElementById("userAnswer").value.trim().toLowerCase();
@@ -673,16 +788,16 @@
             nextQuizWord();
         }
 
-        // Quiz Bitir
         function endQuiz() {
             clearInterval(timerInterval);
             document.getElementById("card").style.display = "block";
             document.getElementById("quizSection").style.display = "none";
+            document.querySelectorAll(".dropdown-toggle").forEach(btn => btn.disabled = false);
+            document.querySelectorAll(".dropdown-menu button").forEach(btn => btn.disabled = false);
             alert(`Test bitti!\nDoğru: ${correctCount}\nYanlış: ${wrongCount}`);
             displayWord();
         }
 
-        // İstatistikleri göster
         function showStats() {
             document.getElementById("stats").style.display = "block";
             const mostWrongWord = words.reduce((max, word) => word.wrongAttempts > max.wrongAttempts ? word : max, words[0]);
@@ -692,23 +807,25 @@
         function closeStats() {
             document.getElementById("stats").style.display = "none";
         }
-function showDetailedStats() {
-    const learned = words.filter(w => w.learned).length;
-    const accuracy = (correctCount / (correctCount + wrongCount) * 100).toFixed(2) || 0;
-    alert(`Detaylı İstatistikler:\nÖğrenilen: ${learned}\nDoğru: ${correctCount}\nYanlış: ${wrongCount}\nBaşarı: %${accuracy}`);
-}
+
+        function showDetailedStats() {
+            const learned = words.filter(w => w.learned).length;
+            const accuracy = (correctCount / (correctCount + wrongCount) * 100).toFixed(2) || 0;
+            alert(`Detaylı İstatistikler:\nÖğrenilen: ${learned}\nDoğru: ${correctCount}\nYanlış: ${wrongCount}\nBaşarı: %${accuracy}`);
+        }
+
         function addNewWord() {
-    const latin = prompt("Latince kelimeyi girin:");
-    const meaning = prompt("Anlamını girin:");
-    const category = prompt("Kategoriyi girin (Siyasi, Askeri, Günlük Yaşam):");
-    if (latin && meaning && category) {
-        words.push({ latin, meaning, learned: false, category, wrongAttempts: 0, correctAttempts: 0, image: "" });
-        localStorage.setItem("learnedWords", JSON.stringify(words));
-        updateProgress();
-        alert("Kelime eklendi!");
-    }
-}
-        // Oyunlaştırma (Rozetler)
+            const latin = prompt("Latince kelimeyi girin:");
+            const meaning = prompt("Anlamını girin:");
+            const category = prompt("Kategoriyi girin (Siyasi, Askeri, Günlük Yaşam):");
+            if (latin && meaning && category) {
+                words.push({ latin, meaning, learned: false, category, wrongAttempts: 0, correctAttempts: 0, image: "" });
+                localStorage.setItem("learnedWords", JSON.stringify(words));
+                updateProgress();
+                alert("Kelime eklendi!");
+            }
+        }
+
         function updateBadges() {
             const learnedCount = words.filter(word => word.learned).length;
             let badges = [];
@@ -717,91 +834,43 @@ function showDetailedStats() {
             if (learnedCount >= 200) badges.push("İmparator");
             document.getElementById("badgeList").innerText = badges.length > 0 ? badges.join(", ") : "Henüz rozet yok";
         }
+
         function calculateDifficulty() {
-    words.forEach(word => {
-        word.difficulty = word.wrongAttempts / (word.correctAttempts + word.wrongAttempts) || 0;
-    });
-    const hardest = words.sort((a, b) => b.difficulty - a.difficulty)[0];
-    alert(`En Zor Kelime: ${hardest.latin} (Zorluk: ${hardest.difficulty.toFixed(2)})`);
-}
+            words.forEach(word => {
+                word.difficulty = word.wrongAttempts / (word.correctAttempts + word.wrongAttempts) || 0;
+            });
+            const hardest = words.sort((a, b) => b.difficulty - a.difficulty)[0];
+            alert(`En Zor Kelime: ${hardest.latin} (Zorluk: ${hardest.difficulty.toFixed(2)})`);
+        }
+
         function setDailyGoal() {
-    const goal = parseInt(prompt("Günlük kelime hedefini girin:"));
-    if (goal) {
-        localStorage.setItem("dailyGoal", goal);
-        alert(`Günlük hedef: ${goal} kelime`);
-    }
-            function startQuiz() {
-    document.getElementById("card").style.display = "none";
-    document.getElementById("quizSection").style.display = "block";
-    // Tüm butonları devre dışı bırak (quiz içindekiler hariç)
-    document.querySelectorAll(".button-group button:not(#quizSection button)").forEach(btn => btn.disabled = true);
-    correctCount = 0;
-    wrongCount = 0;
-    document.getElementById("correctCount").innerText = correctCount;
-    document.getElementById("wrongCount").innerText = wrongCount;
-    document.getElementById("result").innerText = "";
-    document.getElementById("userAnswer").value = "";
-    nextQuizWord();
-}
+            const goal = parseInt(prompt("Günlük kelime hedefini girin:"));
+            if (goal) {
+                localStorage.setItem("dailyGoal", goal);
+                alert(`Günlük hedef: ${goal} kelime`);
+            }
+        }
 
-function endQuiz() {
-    clearInterval(timerInterval);
-    document.getElementById("card").style.display = "block";
-    document.getElementById("quizSection").style.display = "none";
-    // Tüm butonları tekrar aktif et
-    document.querySelectorAll(".button-group button").forEach(btn => btn.disabled = false);
-    alert(`Test bitti!\nDoğru: ${correctCount}\nYanlış: ${wrongCount}`);
-    displayWord();
-}
-}
+        function checkDailyGoal() {
+            const goal = localStorage.getItem("dailyGoal") || 0;
+            const learnedToday = words.filter(w => w.learned && new Date().toDateString() === new Date().toDateString()).length;
+            alert(`Hedef: ${goal}\nBugün Öğrenilen: ${learnedToday}`);
+        }
 
-function checkDailyGoal() {
-    const goal = localStorage.getItem("dailyGoal") || 0;
-    const learnedToday = words.filter(w => w.learned && new Date().toDateString() === new Date().toDateString()).length;
-    alert(`Hedef: ${goal}\nBugün Öğrenilen: ${learnedToday}`);
-}
         function toggleDropdown(id) {
-        const menu = document.getElementById(id);
-        const isVisible = menu.style.display === "block";
-        // Tüm menüleri kapat
-        document.querySelectorAll(".dropdown-menu").forEach(m => m.style.display = "none");
-        // Seçilen menüyü aç/kapat
-        if (!isVisible) {
-            menu.style.display = "block";
-        }
-    }
-
-    // Dışarı tıklayınca menüleri kapat
-    document.addEventListener("click", function(event) {
-        if (!event.target.closest(".dropdown")) {
+            const menu = document.getElementById(id);
+            const isVisible = menu.style.display === "block";
             document.querySelectorAll(".dropdown-menu").forEach(m => m.style.display = "none");
+            if (!isVisible) {
+                menu.style.display = "block";
+            }
         }
-    });
 
-    // Mevcut startQuiz ve endQuiz fonksiyonlarını güncelle
-    function startQuiz() {
-        document.getElementById("card").style.display = "none";
-        document.getElementById("quizSection").style.display = "block";
-        document.querySelectorAll(".dropdown-toggle").forEach(btn => btn.disabled = true);
-        document.querySelectorAll(".dropdown-menu button").forEach(btn => btn.disabled = true);
-        correctCount = 0;
-        wrongCount = 0;
-        document.getElementById("correctCount").innerText = correctCount;
-        document.getElementById("wrongCount").innerText = wrongCount;
-        document.getElementById("result").innerText = "";
-        document.getElementById("userAnswer").value = "";
-        nextQuizWord();
-    }
-
-    function endQuiz() {
-        clearInterval(timerInterval);
-        document.getElementById("card").style.display = "block";
-        document.getElementById("quizSection").style.display = "none";
-        document.querySelectorAll(".dropdown-toggle").forEach(btn => btn.disabled = false);
-        document.querySelectorAll(".dropdown-menu button").forEach(btn => btn.disabled = false);
-        alert(`Test bitti!\nDoğru: ${correctCount}\nYanlış: ${wrongCount}`);
-        displayWord();
-    }
+        document.addEventListener("click", function(event) {
+            if (!event.target.closest(".dropdown")) {
+                document.querySelectorAll(".dropdown-menu").forEach(m => m.style.display = "none");
+            }
+        });
     </script>
 </body>
 </html>
