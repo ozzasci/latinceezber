@@ -149,6 +149,20 @@
         .dark .category-btn:hover {
             background-color: #1565C0;
         }
+        .quiz-options button {
+            display: block;
+            width: 200px;
+            margin: 5px auto;
+            padding: 10px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .quiz-options button:hover {
+            background-color: #1976D2;
+        }
         @media (max-width: 600px) {
             .dropdown-toggle, .dropdown-menu {
                 width: 100%;
@@ -193,7 +207,8 @@
     <div class="dropdown">
         <button class="dropdown-toggle" onclick="toggleDropdown('test-istatistik')">Test ve İstatistik</button>
         <div class="dropdown-menu" id="test-istatistik">
-            <button onclick="startQuiz()">Teste Başla</button>
+            <button onclick="startQuiz(true)">Çoktan Seçmeli Test</button>
+            <button onclick="startQuiz(false)">Yazılı Test</button>
             <button onclick="showDetailedStats()">Detaylı İstatistikler</button>
             <button onclick="calculateDifficulty()">Zor Kelimeleri Bul</button>
         </div>
@@ -232,11 +247,12 @@
     </div>
 
     <div id="quizSection">
-        <h3>Test Modu</h3>
+        <h3 id="quizTitle">Test Modu</h3>
         <p id="quizWord"></p>
-        <p>Kalan Süre: <span id="timer">15</span> sn</p>
-        <input type="text" id="userAnswer" placeholder="Anlamı yazın">
-        <button onclick="checkAnswer()">Kontrol Et</button>
+        <p>Kalan Süre: <span id="timer">60</span> sn</p>
+        <input type="text" id="userAnswer" placeholder="Anlamı yazın" style="display: none;">
+        <div id="quizOptions" class="quiz-options"></div>
+        <button id="checkButton" onclick="checkAnswer()" style="display: none;">Kontrol Et</button>
         <button onclick="endQuiz()">Testi Bitir</button>
         <p id="result"></p>
         <p>Doğru: <span id="correctCount">0</span> | Yanlış: <span id="wrongCount">0</span></p>
@@ -458,11 +474,14 @@
             { latin: "Monumentum", meaning: "Anıt", learned: false, category: "Günlük Yaşam", wrongAttempts: 0, correctAttempts: 0, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Arch_of_Constantine.jpg/320px-Arch_of_Constantine.jpg" }   
         ];
 
- let currentIndex = 0;
+let currentIndex = 0;
         let correctCount = 0;
         let wrongCount = 0;
         let timerInterval;
         let currentCategory = "Hepsi";
+        let quizWords = [];
+        let quizIndex = 0;
+        let isMultipleChoice = false;
 
         window.onload = function() {
             const savedWords = JSON.parse(localStorage.getItem("learnedWords")) || [];
@@ -614,53 +633,80 @@
             }
         }
 
-        function startQuiz() {
+        function startQuiz(multipleChoice) {
+            isMultipleChoice = multipleChoice;
             document.getElementById("card").style.display = "none";
             document.getElementById("quizSection").style.display = "block";
             document.querySelectorAll(".dropdown-toggle").forEach(btn => btn.disabled = true);
             document.querySelectorAll(".dropdown-menu button").forEach(btn => btn.disabled = true);
             correctCount = 0;
             wrongCount = 0;
+            quizIndex = 0;
             document.getElementById("correctCount").innerText = correctCount;
             document.getElementById("wrongCount").innerText = wrongCount;
             document.getElementById("result").innerText = "";
-            document.getElementById("userAnswer").value = "";
-            nextQuizWord();
-        }
+            document.getElementById("quizTitle").innerText = multipleChoice ? "Çoktan Seçmeli Test" : "Yazılı Test";
+            document.getElementById("userAnswer").style.display = multipleChoice ? "none" : "block";
+            document.getElementById("checkButton").style.display = multipleChoice ? "none" : "block";
+            document.getElementById("quizOptions").innerHTML = "";
 
-        function nextQuizWord() {
-            clearInterval(timerInterval);
-            const availableWords = words.filter(word => currentCategory === "Hepsi" || word.category === currentCategory);
-            currentIndex = Math.floor(Math.random() * availableWords.length);
-            document.getElementById("quizWord").innerText = availableWords[currentIndex].latin;
-            document.getElementById("userAnswer").value = "";
-            document.getElementById("result").innerText = "";
-            let timeLeft = 15;
+            // Zor kelimeleri önceliklendiren quiz kelime listesi
+            quizWords = words
+                .filter(word => currentCategory === "Hepsi" || word.category === currentCategory)
+                .sort((a, b) => b.wrongAttempts - a.wrongAttempts)
+                .slice(0, 10); // 10 kelime ile sınırlı quiz
+
+            let timeLeft = 60;
             document.getElementById("timer").innerText = timeLeft;
             timerInterval = setInterval(() => {
                 timeLeft--;
                 document.getElementById("timer").innerText = timeLeft;
                 if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    wrongCount++;
-                    words[currentIndex].wrongAttempts++;
-                    document.getElementById("wrongCount").innerText = wrongCount;
-                    document.getElementById("result").innerText = `Süre bitti! Doğru cevap: ${words[currentIndex].meaning}`;
-                    localStorage.setItem("learnedWords", JSON.stringify(words));
-                    nextQuizWord();
+                    endQuiz();
                 }
             }, 1000);
+
+            nextQuizWord();
         }
 
-        function checkAnswer() {
-            clearInterval(timerInterval);
-            const userAnswer = document.getElementById("userAnswer").value.trim().toLowerCase();
-            const correctAnswer = words[currentIndex].meaning.toLowerCase();
-            if (userAnswer === correctAnswer) {
+        function nextQuizWord() {
+            if (quizIndex >= quizWords.length) {
+                endQuiz();
+                return;
+            }
+            currentIndex = words.indexOf(quizWords[quizIndex]);
+            document.getElementById("quizWord").innerText = quizWords[quizIndex].latin;
+            document.getElementById("userAnswer").value = "";
+            document.getElementById("result").innerText = "";
+
+            if (isMultipleChoice) {
+                const options = generateOptions(quizWords[quizIndex].meaning);
+                const quizOptions = document.getElementById("quizOptions");
+                quizOptions.innerHTML = "";
+                options.forEach(option => {
+                    const btn = document.createElement("button");
+                    btn.innerText = option;
+                    btn.onclick = () => checkMultipleChoice(option);
+                    quizOptions.appendChild(btn);
+                });
+            }
+        }
+
+        function generateOptions(correctAnswer) {
+            const options = [correctAnswer];
+            while (options.length < 4) {
+                const randomWord = words[Math.floor(Math.random() * words.length)].meaning;
+                if (!options.includes(randomWord)) options.push(randomWord);
+            }
+            return options.sort(() => 0.5 - Math.random());
+        }
+
+        function checkMultipleChoice(selected) {
+            const correctAnswer = quizWords[quizIndex].meaning;
+            if (selected === correctAnswer) {
                 document.getElementById("result").innerText = "Doğru!";
                 correctCount++;
                 words[currentIndex].correctAttempts++;
-                document.getElementById("correctCount").innerText = correctCount;
                 if (!words[currentIndex].learned) {
                     words[currentIndex].learned = true;
                     words[currentIndex].learnedDate = new Date().toISOString();
@@ -668,12 +714,39 @@
                     updateBadges();
                 }
             } else {
-                document.getElementById("result").innerText = `Yanlış! Doğru cevap: ${words[currentIndex].meaning}`;
+                document.getElementById("result").innerText = `Yanlış! Doğru cevap: ${correctAnswer}`;
                 wrongCount++;
                 words[currentIndex].wrongAttempts++;
-                document.getElementById("wrongCount").innerText = wrongCount;
             }
+            document.getElementById("correctCount").innerText = correctCount;
+            document.getElementById("wrongCount").innerText = wrongCount;
             localStorage.setItem("learnedWords", JSON.stringify(words));
+            quizIndex++;
+            nextQuizWord();
+        }
+
+        function checkAnswer() {
+            const userAnswer = document.getElementById("userAnswer").value.trim().toLowerCase();
+            const correctAnswer = quizWords[quizIndex].meaning.toLowerCase();
+            if (userAnswer === correctAnswer) {
+                document.getElementById("result").innerText = "Doğru!";
+                correctCount++;
+                words[currentIndex].correctAttempts++;
+                if (!words[currentIndex].learned) {
+                    words[currentIndex].learned = true;
+                    words[currentIndex].learnedDate = new Date().toISOString();
+                    updateProgress();
+                    updateBadges();
+                }
+            } else {
+                document.getElementById("result").innerText = `Yanlış! Doğru cevap: ${correctAnswer}`;
+                wrongCount++;
+                words[currentIndex].wrongAttempts++;
+            }
+            document.getElementById("correctCount").innerText = correctCount;
+            document.getElementById("wrongCount").innerText = wrongCount;
+            localStorage.setItem("learnedWords", JSON.stringify(words));
+            quizIndex++;
             nextQuizWord();
         }
 
