@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
@@ -25,6 +25,13 @@
             cursor: pointer;
             border-radius: 5px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            opacity: 0;
+            transform: translateX(-100%);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .card.visible {
+            opacity: 1;
+            transform: translateX(0);
         }
         .card:hover {
             background-color: #e0e0e0;
@@ -105,11 +112,11 @@
         #resetButton:hover {
             background-color: #d32f2f;
         }
-        #progress, #quizSection, #stats {
+        #progress, #quizSection, #stats, #reviewSection {
             margin-top: 20px;
             font-size: 18px;
         }
-        #quizSection, #stats {
+        #quizSection, #stats, #reviewSection {
             display: none;
         }
         #timer {
@@ -163,6 +170,18 @@
         .quiz-options button:hover {
             background-color: #1976D2;
         }
+        #reviewList button {
+            margin: 5px;
+            padding: 5px 10px;
+            background-color: #FF9800;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #reviewList button:hover {
+            background-color: #F57C00;
+        }
         @media (max-width: 600px) {
             .dropdown-toggle, .dropdown-menu {
                 width: 100%;
@@ -209,6 +228,7 @@
         <div class="dropdown-menu" id="test-istatistik">
             <button onclick="startQuiz(true)">Çoktan Seçmeli Test</button>
             <button onclick="startQuiz(false)">Yazılı Test</button>
+            <button onclick="startReviewQuiz()">Tekrar Testi</button>
             <button onclick="showDetailedStats()">Detaylı İstatistikler</button>
             <button onclick="calculateDifficulty()">Zor Kelimeleri Bul</button>
         </div>
@@ -220,6 +240,7 @@
             <button onclick="addNewWord()">Yeni Kelime Ekle</button>
             <button id="resetButton" onclick="resetProgress()">İlerlemeyi Sıfırla</button>
             <button onclick="toggleTheme()">Tema Değiştir</button>
+            <button onclick="showReviewSection()">Tekrar Listesini Göster</button>
         </div>
     </div>
 
@@ -244,6 +265,12 @@
 
     <div id="progress">
         Öğrenilen Kelimeler: <span id="learnedCount">0</span> / <span id="totalCount">0</span>
+    </div>
+
+    <div id="reviewSection">
+        <h3>Bugün Tekrar Edilecekler</h3>
+        <div id="reviewList"></div>
+        <button onclick="hideReviewSection()">Kapat</button>
     </div>
 
     <div id="quizSection">
@@ -474,6 +501,7 @@
             { latin: "Monumentum", meaning: "Anıt", learned: false, category: "Günlük Yaşam", wrongAttempts: 0, correctAttempts: 0, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Arch_of_Constantine.jpg/320px-Arch_of_Constantine.jpg" }   
         ];
             // Tam liste için orijinal 200 kelimeyi buraya ekleyebilirsiniz.
+const reviewIntervals = [1, 3, 7, 14, 30]; // Gün cinsinden aralıklar
 
         let currentIndex = 0;
         let correctCount = 0;
@@ -484,6 +512,9 @@
         let quizIndex = 0;
         let isMultipleChoice = false;
 
+        const correctSound = new Audio('https://www.soundjay.com/buttons/beep-01a.mp3');
+        const wrongSound = new Audio('https://www.soundjay.com/buttons/beep-02.mp3');
+
         window.onload = function() {
             const savedWords = JSON.parse(localStorage.getItem("learnedWords")) || [];
             if (savedWords.length > 0) {
@@ -493,6 +524,8 @@
                         word.wrongAttempts = savedWords[index].wrongAttempts || 0;
                         word.correctAttempts = savedWords[index].correctAttempts || 0;
                         word.learnedDate = savedWords[index].learnedDate || null;
+                        word.nextReviewDate = savedWords[index].nextReviewDate || null;
+                        word.reviewLevel = savedWords[index].reviewLevel || 0;
                     }
                 });
             }
@@ -502,16 +535,21 @@
         };
 
         function displayWord() {
-            document.getElementById("word").innerText = words[currentIndex].latin;
-            document.getElementById("meaning").innerText = words[currentIndex].meaning;
-            document.getElementById("meaning").style.display = "none";
-            const img = document.getElementById("wordImage");
-            if (words[currentIndex].image) {
-                img.src = words[currentIndex].image;
-                img.style.display = "block";
-            } else {
-                img.style.display = "none";
-            }
+            const card = document.getElementById("card");
+            card.classList.remove("visible");
+            setTimeout(() => {
+                document.getElementById("word").innerText = words[currentIndex].latin;
+                document.getElementById("meaning").innerText = words[currentIndex].meaning;
+                document.getElementById("meaning").style.display = "none";
+                const img = document.getElementById("wordImage");
+                if (words[currentIndex].image) {
+                    img.src = words[currentIndex].image;
+                    img.style.display = "block";
+                } else {
+                    img.style.display = "none";
+                }
+                card.classList.add("visible");
+            }, 50);
         }
 
         function toggleMeaning() {
@@ -601,6 +639,8 @@
             if (!words[currentIndex].learned) {
                 words[currentIndex].learned = true;
                 words[currentIndex].learnedDate = new Date().toISOString();
+                words[currentIndex].nextReviewDate = calculateNextReviewDate(0);
+                words[currentIndex].reviewLevel = 0;
                 localStorage.setItem("learnedWords", JSON.stringify(words));
                 alert(`${words[currentIndex].latin} öğrenildi!`);
                 updateProgress();
@@ -609,6 +649,13 @@
                 alert("Bu kelime zaten öğrenildi!");
             }
             nextWord();
+        }
+
+        function calculateNextReviewDate(level) {
+            const now = new Date();
+            const daysToAdd = reviewIntervals[level] || 30; // Son seviye sonrası 30 gün
+            now.setDate(now.getDate() + daysToAdd);
+            return now.toISOString();
         }
 
         function updateProgress() {
@@ -625,6 +672,8 @@
                     word.wrongAttempts = 0;
                     word.correctAttempts = 0;
                     word.learnedDate = null;
+                    word.nextReviewDate = null;
+                    word.reviewLevel = 0;
                 });
                 localStorage.removeItem("learnedWords");
                 updateProgress();
@@ -654,7 +703,7 @@
             quizWords = words
                 .filter(word => currentCategory === "Hepsi" || word.category === currentCategory)
                 .sort((a, b) => b.wrongAttempts - a.wrongAttempts)
-                .slice(0, Math.min(10, words.length)); // En fazla 10 kelime
+                .slice(0, Math.min(10, words.length));
 
             if (quizWords.length === 0) {
                 alert("Seçilen kategoride kelime yok!");
@@ -673,6 +722,48 @@
             }, 1000);
 
             nextQuizWord();
+        }
+
+        function startReviewQuiz() {
+            isMultipleChoice = true; // Varsayılan olarak çoktan seçmeli
+            document.getElementById("card").style.display = "none";
+            document.getElementById("quizSection").style.display = "block";
+            document.querySelectorAll(".dropdown-toggle").forEach(btn => btn.disabled = true);
+            document.querySelectorAll(".dropdown-menu button").forEach(btn => btn.disabled = true);
+            correctCount = 0;
+            wrongCount = 0;
+            quizIndex = 0;
+            document.getElementById("correctCount").innerText = correctCount;
+            document.getElementById("wrongCount").innerText = wrongCount;
+            document.getElementById("result").innerText = "";
+            document.getElementById("quizTitle").innerText = "Tekrar Testi";
+            document.getElementById("userAnswer").style.display = "none";
+            document.getElementById("checkButton").style.display = "none";
+            document.getElementById("quizOptions").innerHTML = "";
+
+            quizWords = getReviewWords();
+            if (quizWords.length === 0) {
+                alert("Bugün tekrar edilecek kelime yok!");
+                endQuiz();
+                return;
+            }
+
+            let timeLeft = 60;
+            document.getElementById("timer").innerText = timeLeft;
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById("timer").innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    endQuiz();
+                }
+            }, 1000);
+
+            nextQuizWord();
+        }
+
+        function getReviewWords() {
+            const today = new Date().toISOString().split("T")[0];
+            return words.filter(word => word.learned && word.nextReviewDate && new Date(word.nextReviewDate).toISOString().split("T")[0] <= today);
         }
 
         function nextQuizWord() {
@@ -718,16 +809,16 @@
                 document.getElementById("result").innerText = "Doğru!";
                 correctCount++;
                 words[wordIndex].correctAttempts++;
-                if (!words[wordIndex].learned) {
-                    words[wordIndex].learned = true;
-                    words[wordIndex].learnedDate = new Date().toISOString();
-                    updateProgress();
-                    updateBadges();
-                }
+                correctSound.play();
+                words[wordIndex].reviewLevel = Math.min(words[wordIndex].reviewLevel + 1, reviewIntervals.length - 1);
+                words[wordIndex].nextReviewDate = calculateNextReviewDate(words[wordIndex].reviewLevel);
             } else {
                 document.getElementById("result").innerText = `Yanlış! Doğru cevap: ${correctAnswer}`;
                 wrongCount++;
                 words[wordIndex].wrongAttempts++;
+                wrongSound.play();
+                words[wordIndex].reviewLevel = Math.max(words[wordIndex].reviewLevel - 1, 0);
+                words[wordIndex].nextReviewDate = calculateNextReviewDate(words[wordIndex].reviewLevel);
             }
             document.getElementById("correctCount").innerText = correctCount;
             document.getElementById("wrongCount").innerText = wrongCount;
@@ -744,16 +835,27 @@
                 document.getElementById("result").innerText = "Doğru!";
                 correctCount++;
                 words[wordIndex].correctAttempts++;
+                correctSound.play();
                 if (!words[wordIndex].learned) {
                     words[wordIndex].learned = true;
                     words[wordIndex].learnedDate = new Date().toISOString();
+                    words[wordIndex].nextReviewDate = calculateNextReviewDate(0);
+                    words[wordIndex].reviewLevel = 0;
                     updateProgress();
                     updateBadges();
+                } else {
+                    words[wordIndex].reviewLevel = Math.min(words[wordIndex].reviewLevel + 1, reviewIntervals.length - 1);
+                    words[wordIndex].nextReviewDate = calculateNextReviewDate(words[wordIndex].reviewLevel);
                 }
             } else {
                 document.getElementById("result").innerText = `Yanlış! Doğru cevap: ${correctAnswer}`;
                 wrongCount++;
                 words[wordIndex].wrongAttempts++;
+                wrongSound.play();
+                if (words[wordIndex].learned) {
+                    words[wordIndex].reviewLevel = Math.max(words[wordIndex].reviewLevel - 1, 0);
+                    words[wordIndex].nextReviewDate = calculateNextReviewDate(words[wordIndex].reviewLevel);
+                }
             }
             document.getElementById("correctCount").innerText = correctCount;
             document.getElementById("wrongCount").innerText = wrongCount;
@@ -772,6 +874,31 @@
             displayWord();
         }
 
+        function showReviewSection() {
+            const reviewWords = getReviewWords();
+            const reviewList = document.getElementById("reviewList");
+            reviewList.innerHTML = "";
+            if (reviewWords.length === 0) {
+                reviewList.innerText = "Bugün tekrar edilecek kelime yok.";
+            } else {
+                reviewWords.forEach((word, index) => {
+                    const btn = document.createElement("button");
+                    btn.innerText = word.latin;
+                    btn.onclick = () => {
+                        currentIndex = words.indexOf(word);
+                        displayWord();
+                        hideReviewSection();
+                    };
+                    reviewList.appendChild(btn);
+                });
+            }
+            document.getElementById("reviewSection").style.display = "block";
+        }
+
+        function hideReviewSection() {
+            document.getElementById("reviewSection").style.display = "none";
+        }
+
         function showStats() {
             document.getElementById("stats").style.display = "block";
             const mostWrongWord = words.reduce((max, word) => word.wrongAttempts > max.wrongAttempts ? word : max, words[0]);
@@ -785,7 +912,8 @@
         function showDetailedStats() {
             const learned = words.filter(w => w.learned).length;
             const accuracy = (correctCount / (correctCount + wrongCount) * 100).toFixed(2) || 0;
-            alert(`Detaylı İstatistikler:\nÖğrenilen: ${learned}\nDoğru: ${correctCount}\nYanlış: ${wrongCount}\nBaşarı: %${accuracy}`);
+            const reviewPending = getReviewWords().length;
+            alert(`Detaylı İstatistikler:\nÖğrenilen: ${learned}\nDoğru: ${correctCount}\nYanlış: ${wrongCount}\nBaşarı: %${accuracy}\nBugün Tekrar Edilecek: ${reviewPending}`);
         }
 
         function addNewWord() {
@@ -793,7 +921,7 @@
             const meaning = prompt("Anlamını girin:");
             const category = prompt("Kategoriyi girin (Siyasi, Askeri, Günlük Yaşam):");
             if (latin && meaning && category) {
-                words.push({ latin, meaning, learned: false, category, wrongAttempts: 0, correctAttempts: 0, image: "", learnedDate: null });
+                words.push({ latin, meaning, learned: false, category, wrongAttempts: 0, correctAttempts: 0, image: "", learnedDate: null, nextReviewDate: null, reviewLevel: 0 });
                 localStorage.setItem("learnedWords", JSON.stringify(words));
                 updateProgress();
                 alert("Kelime eklendi!");
