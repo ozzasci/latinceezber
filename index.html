@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Roma Latince Kelime Ezber</title>
@@ -216,9 +217,10 @@
             .card {
                 width: 100%;
             }
-            .category-btn {
-                width: 100%;
-                margin: 5px 0;
+            .category-btn i {
+    margin-right: 8px;
+    font-size: 18px;
+
             }
             .progress-bar {
                 width: 100%;
@@ -278,14 +280,13 @@
     <div>
         <input type="text" id="search" placeholder="Kelime ara" onkeyup="searchWord()">
     </div>
-    <div class="category-buttons">
-        <h3>Kategori Seç</h3>
-        <button class="category-btn" onclick="filterByCategory('Hepsi')">Hepsi</button>
-        <button class="category-btn" onclick="filterByCategory('Siyasi')">Siyasi</button>
-        <button class="category-btn" onclick="filterByCategory('Askeri')">Askeri</button>
-        <button class="category-btn" onclick="filterByCategory('Günlük Yaşam')">Günlük Yaşam</button>
-    </div>
-
+   <div class="category-buttons">
+    <h3>Kategori Seç</h3>
+   
+<button class="category-btn" onclick="filterByCategory('Hepsi')"><i class="fas fa-globe"></i> Hepsi</button>
+<button class="category-btn" onclick="filterByCategory('Siyasi')"><i class="fas fa-crown"></i> Siyasi</button>
+<button class="category-btn" onclick="filterByCategory('Askeri')"><i class="fas fa-sword"></i> Askeri</button>
+<button class="category-btn" onclick="filterByCategory('Günlük Yaşam')"><i class="fas fa-home"></i> Günlük Yaşam</button>
     <div>
         <h3>Zamanlanmış Hatırlatma</h3>
         <input type="time" id="reminderTime">
