@@ -1,4 +1,4 @@
-<!!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
@@ -17,36 +17,33 @@
             color: #fff;
         }
         .card {
-            background-color: white;
-            width: 300px;
+            background: linear-gradient(135deg, #fff, #f0f0f0);
+            width: 320px;
             margin: 20px auto;
-            padding: 20px;
-            border: 1px solid #ccc;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
             cursor: pointer;
-            border-radius: 5px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transform: scale(0.95);
             opacity: 0;
-            transform: translateX(-100%);
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
         }
         .card.visible {
+            transform: scale(1);
             opacity: 1;
-            transform: translateX(0);
         }
         .card:hover {
-            background-color: #e0e0e0;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            transform: scale(1.02);
         }
         .dark .card {
-            background-color: #444;
+            background: linear-gradient(135deg, #444, #555);
             border-color: #666;
-        }
-        .dark .card:hover {
-            background-color: #555;
         }
         #meaning {
             display: none;
-            color: #555;
+            color: #666;
+            font-style: italic;
         }
         .dropdown {
             margin: 10px auto;
@@ -130,6 +127,8 @@
         input[type="time"], input[type="text"] {
             padding: 5px;
             margin: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
         }
         .category-buttons {
             margin: 20px auto;
@@ -159,16 +158,31 @@
         .quiz-options button {
             display: block;
             width: 200px;
-            margin: 5px auto;
-            padding: 10px;
+            margin: 8px auto;
+            padding: 12px;
             background-color: #2196F3;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s, background-color 0.2s;
         }
         .quiz-options button:hover {
             background-color: #1976D2;
+            transform: scale(1.05);
+        }
+        #quizSection.correct {
+            border: 2px solid #4CAF50;
+            border-radius: 10px;
+            padding: 10px;
+            transition: border 0.3s;
+        }
+        #quizSection.wrong {
+            border: 2px solid #f44336;
+            border-radius: 10px;
+            padding: 10px;
+            transition: border 0.3s;
         }
         #reviewList button {
             margin: 5px;
@@ -182,6 +196,19 @@
         #reviewList button:hover {
             background-color: #F57C00;
         }
+        .progress-bar {
+            width: 300px;
+            height: 20px;
+            background-color: #ddd;
+            border-radius: 10px;
+            margin: 10px auto;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #4CAF50;
+            transition: width 0.5s ease;
+        }
         @media (max-width: 600px) {
             .dropdown-toggle, .dropdown-menu {
                 width: 100%;
@@ -192,6 +219,9 @@
             .category-btn {
                 width: 100%;
                 margin: 5px 0;
+            }
+            .progress-bar {
+                width: 100%;
             }
         }
     </style>
@@ -265,6 +295,9 @@
 
     <div id="progress">
         Öğrenilen Kelimeler: <span id="learnedCount">0</span> / <span id="totalCount">0</span>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+        </div>
     </div>
 
     <div id="reviewSection">
@@ -501,7 +534,7 @@
             { latin: "Monumentum", meaning: "Anıt", learned: false, category: "Günlük Yaşam", wrongAttempts: 0, correctAttempts: 0, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Arch_of_Constantine.jpg/320px-Arch_of_Constantine.jpg" }   
         ];
             // Tam liste için orijinal 200 kelimeyi buraya ekleyebilirsiniz.
-const reviewIntervals = [1, 3, 7, 14, 30]; // Gün cinsinden aralıklar
+const reviewIntervals = [1, 3, 7, 14, 30];
 
         let currentIndex = 0;
         let correctCount = 0;
@@ -653,7 +686,7 @@ const reviewIntervals = [1, 3, 7, 14, 30]; // Gün cinsinden aralıklar
 
         function calculateNextReviewDate(level) {
             const now = new Date();
-            const daysToAdd = reviewIntervals[level] || 30; // Son seviye sonrası 30 gün
+            const daysToAdd = reviewIntervals[level] || 30;
             now.setDate(now.getDate() + daysToAdd);
             return now.toISOString();
         }
@@ -661,8 +694,10 @@ const reviewIntervals = [1, 3, 7, 14, 30]; // Gün cinsinden aralıklar
         function updateProgress() {
             const learnedCount = words.filter(word => word.learned).length;
             const totalCount = words.length;
+            const progressPercentage = (learnedCount / totalCount) * 100;
             document.getElementById("learnedCount").innerText = learnedCount;
             document.getElementById("totalCount").innerText = totalCount;
+            document.getElementById("progressFill").style.width = `${progressPercentage}%`;
         }
 
         function resetProgress() {
@@ -687,6 +722,7 @@ const reviewIntervals = [1, 3, 7, 14, 30]; // Gün cinsinden aralıklar
             isMultipleChoice = multipleChoice;
             document.getElementById("card").style.display = "none";
             document.getElementById("quizSection").style.display = "block";
+            document.getElementById("quizSection").classList.remove("correct", "wrong");
             document.querySelectorAll(".dropdown-toggle").forEach(btn => btn.disabled = true);
             document.querySelectorAll(".dropdown-menu button").forEach(btn => btn.disabled = true);
             correctCount = 0;
@@ -725,9 +761,10 @@ const reviewIntervals = [1, 3, 7, 14, 30]; // Gün cinsinden aralıklar
         }
 
         function startReviewQuiz() {
-            isMultipleChoice = true; // Varsayılan olarak çoktan seçmeli
+            isMultipleChoice = true;
             document.getElementById("card").style.display = "none";
             document.getElementById("quizSection").style.display = "block";
+            document.getElementById("quizSection").classList.remove("correct", "wrong");
             document.querySelectorAll(".dropdown-toggle").forEach(btn => btn.disabled = true);
             document.querySelectorAll(".dropdown-menu button").forEach(btn => btn.disabled = true);
             correctCount = 0;
@@ -805,6 +842,7 @@ const reviewIntervals = [1, 3, 7, 14, 30]; // Gün cinsinden aralıklar
         function checkMultipleChoice(selected, currentWord) {
             const correctAnswer = currentWord.meaning;
             const wordIndex = words.indexOf(currentWord);
+            const quizSection = document.getElementById("quizSection");
             if (selected === correctAnswer) {
                 document.getElementById("result").innerText = "Doğru!";
                 correctCount++;
@@ -812,6 +850,8 @@ const reviewIntervals = [1, 3, 7, 14, 30]; // Gün cinsinden aralıklar
                 correctSound.play();
                 words[wordIndex].reviewLevel = Math.min(words[wordIndex].reviewLevel + 1, reviewIntervals.length - 1);
                 words[wordIndex].nextReviewDate = calculateNextReviewDate(words[wordIndex].reviewLevel);
+                quizSection.classList.remove("wrong");
+                quizSection.classList.add("correct");
             } else {
                 document.getElementById("result").innerText = `Yanlış! Doğru cevap: ${correctAnswer}`;
                 wrongCount++;
@@ -819,18 +859,21 @@ const reviewIntervals = [1, 3, 7, 14, 30]; // Gün cinsinden aralıklar
                 wrongSound.play();
                 words[wordIndex].reviewLevel = Math.max(words[wordIndex].reviewLevel - 1, 0);
                 words[wordIndex].nextReviewDate = calculateNextReviewDate(words[wordIndex].reviewLevel);
+                quizSection.classList.remove("correct");
+                quizSection.classList.add("wrong");
             }
             document.getElementById("correctCount").innerText = correctCount;
             document.getElementById("wrongCount").innerText = wrongCount;
             localStorage.setItem("learnedWords", JSON.stringify(words));
             quizIndex++;
-            nextQuizWord();
+            setTimeout(nextQuizWord, 500); // Görsel geri bildirim için kısa bir gecikme
         }
 
         function checkAnswer() {
             const userAnswer = document.getElementById("userAnswer").value.trim().toLowerCase();
             const correctAnswer = quizWords[quizIndex].meaning.toLowerCase();
             const wordIndex = words.indexOf(quizWords[quizIndex]);
+            const quizSection = document.getElementById("quizSection");
             if (userAnswer === correctAnswer) {
                 document.getElementById("result").innerText = "Doğru!";
                 correctCount++;
@@ -847,6 +890,8 @@ const reviewIntervals = [1, 3, 7, 14, 30]; // Gün cinsinden aralıklar
                     words[wordIndex].reviewLevel = Math.min(words[wordIndex].reviewLevel + 1, reviewIntervals.length - 1);
                     words[wordIndex].nextReviewDate = calculateNextReviewDate(words[wordIndex].reviewLevel);
                 }
+                quizSection.classList.remove("wrong");
+                quizSection.classList.add("correct");
             } else {
                 document.getElementById("result").innerText = `Yanlış! Doğru cevap: ${correctAnswer}`;
                 wrongCount++;
@@ -856,18 +901,21 @@ const reviewIntervals = [1, 3, 7, 14, 30]; // Gün cinsinden aralıklar
                     words[wordIndex].reviewLevel = Math.max(words[wordIndex].reviewLevel - 1, 0);
                     words[wordIndex].nextReviewDate = calculateNextReviewDate(words[wordIndex].reviewLevel);
                 }
+                quizSection.classList.remove("correct");
+                quizSection.classList.add("wrong");
             }
             document.getElementById("correctCount").innerText = correctCount;
             document.getElementById("wrongCount").innerText = wrongCount;
             localStorage.setItem("learnedWords", JSON.stringify(words));
             quizIndex++;
-            nextQuizWord();
+            setTimeout(nextQuizWord, 500); // Görsel geri bildirim için kısa bir gecikme
         }
 
         function endQuiz() {
             clearInterval(timerInterval);
             document.getElementById("card").style.display = "block";
             document.getElementById("quizSection").style.display = "none";
+            document.getElementById("quizSection").classList.remove("correct", "wrong");
             document.querySelectorAll(".dropdown-toggle").forEach(btn => btn.disabled = false);
             document.querySelectorAll(".dropdown-menu button").forEach(btn => btn.disabled = false);
             alert(`Test bitti!\nDoğru: ${correctCount}\nYanlış: ${wrongCount}`);
@@ -978,4 +1026,3 @@ const reviewIntervals = [1, 3, 7, 14, 30]; // Gün cinsinden aralıklar
     </script>
 </body>
 </html>
-
