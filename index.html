@@ -115,6 +115,7 @@
     <button onclick="addNewWord()">Yeni Kelime Ekle</button>
     <button onclick="showDetailedStats()">Detaylı İstatistikler</button>
     <button onclick="startQuiz()">Teste Başla</button>
+    <button onclick="calculateDifficulty()">Zor Kelimeleri Bul</button>
     <p id="reminderStatus"></p>
 
     <!-- Tema Seçimi -->
@@ -657,6 +658,13 @@ function showDetailedStats() {
             if (learnedCount >= 200) badges.push("İmparator");
             document.getElementById("badgeList").innerText = badges.length > 0 ? badges.join(", ") : "Henüz rozet yok";
         }
+        function calculateDifficulty() {
+    words.forEach(word => {
+        word.difficulty = word.wrongAttempts / (word.correctAttempts + word.wrongAttempts) || 0;
+    });
+    const hardest = words.sort((a, b) => b.difficulty - a.difficulty)[0];
+    alert(`En Zor Kelime: ${hardest.latin} (Zorluk: ${hardest.difficulty.toFixed(2)})`);
+}
     </script>
 </body>
 </html>
