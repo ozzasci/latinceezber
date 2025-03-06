@@ -5,104 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Roma Latince Kelime Ezber</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f4f4f4;
-            padding: 10px;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        body.dark {
-            background-color: #333;
-            color: #fff;
-        }
-        .card {
-            background-color: white;
-            width: 90%;
-            max-width: 400px;
-            margin: 15px auto;
-            padding: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            transition: box-shadow 0.3s;
-        }
-        .card:hover {
-            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
-        }
-        .dark .card {
-            background-color: #444;
-            border-color: #666;
-        }
-        #meaning {
-            display: none;
-            color: #555;
-        }
-        button {
-            padding: 8px 16px;
-            margin: 3px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            transition: background-color 0.3s, box-shadow 0.3s;
-            width: 100%;
-            max-width: 200px;
-        }
-        button:hover {
-            background-color: #45a049;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        }
-        #resetButton {
-            background-color: #f44336;
-        }
-        #resetButton:hover {
-            background-color: #d32f2f;
-        }
-        #favoriteButton {
-            background-color: #ff9800;
-        }
-        #favoriteButton:hover {
-            background-color: #e68a00;
-        }
-        input[type="time"], input[type="text"], select {
-            padding: 5px;
-            margin: 5px;
-            width: 90%;
-            max-width: 200px;
-        }
-        #suggestions {
-            position: absolute;
-            background: white;
-            border: 1px solid #ccc;
-            max-height: 150px;
-            overflow-y: auto;
-            width: 90%;
-            max-width: 200px;
-            display: none;
-        }
-        #suggestions div {
-            padding: 5px;
-            cursor: pointer;
-        }
-        #suggestions div:hover {
-            background: #e0e0e0;
-        }
-        #level, #tasks {
-            margin-top: 15px;
-            font-size: 16px;
-        }
-        @media (min-width: 600px) {
-            button {
-                width: auto;
-                padding: 10px 20px;
-            }
-            .card {
-                width: 300px;
-            }
-        }
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; padding: 10px; transition: background-color 0.3s, color 0.3s; }
+        body.dark { background-color: #333; color: #fff; }
+        .card { background-color: white; width: 90%; max-width: 400px; margin: 15px auto; padding: 15px; border: 1px solid #ccc; border-radius: 5px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: box-shadow 0.3s; }
+        .card:hover { box-shadow: 0 6px 12px rgba(0,0,0,0.2); }
+        .dark .card { background-color: #444; border-color: #666; }
+        #meaning { display: none; color: #555; }
+        button { padding: 8px 16px; margin: 3px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: background-color 0.3s, box-shadow 0.3s; width: 100%; max-width: 200px; }
+        button:hover { background-color: #45a049; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+        #resetButton { background-color: #f44336; }
+        #resetButton:hover { background-color: #d32f2f; }
+        #favoriteButton { background-color: #ff9800; font-size: 16px; padding: 8px 12px; }
+        #favoriteButton:hover { background-color: #e68a00; }
+        input[type="text"] { padding: 5px; margin: 5px; width: 90%; max-width: 200px; }
+        #suggestions { position: absolute; background: white; border: 1px solid #ccc; max-height: 150px; overflow-y: auto; width: 90%; max-width: 200px; display: none; }
+        #suggestions div { padding: 5px; cursor: pointer; }
+        #suggestions div:hover { background: #e0e0e0; }
+        #level, #tasks { margin-top: 15px; font-size: 16px; }
+        @media (min-width: 600px) { button { width: auto; padding: 10px 20px; } .card { width: 300px; } }
     </style>
 </head>
 <body class="light">
@@ -110,50 +30,24 @@
     <div class="card" id="card" onclick="toggleMeaning()" ontouchstart="toggleMeaning()">
         <h2 id="word">Imperium</h2>
         <p id="meaning">Güç, otorite</p>
-        <img id="wordImage" src="" alt="" style="max-width: 100%; display: none;">
     </div>
     <button onclick="nextWord()">Sonraki Kelime</button>
-    <button onclick="setReminder()">Hatırlatma Ayarla (5 sn)</button>
     <button onclick="markAsLearned()">Öğrenildi</button>
-    <button onclick="speakWord()">Dinle</button>
-    <button onclick="startQuiz()">Teste Başla</button>
     <button id="favoriteButton" onclick="toggleFavorite()">★ Favorilere Ekle</button>
-    <p id="reminderStatus"></p>
-
-    <!-- Arama ve Öneriler -->
     <div style="position: relative;">
         <input type="text" id="search" placeholder="Kelime ara" onkeyup="searchWord()">
         <div id="suggestions"></div>
     </div>
-
-    <!-- Kategori Seçimi -->
-    <div>
-        <h3>Kategori Seç</h3>
-        <select id="categoryFilter" onchange="filterByCategory(this.value)">
-            <option value="Hepsi">Hepsi</option>
-            <option value="Siyasi">Siyasi</option>
-            <option value="Askeri">Askeri</option>
-            <option value="Günlük Yaşam">Günlük Yaşam</option>
-        </select>
-    </div>
-
-    <!-- İlerleme ve Seviye -->
     <div id="progress">Öğrenilen: <span id="learnedCount">0</span> / <span id="totalCount">0</span></div>
     <div id="level">Seviye: <span id="levelName">Acemi</span></div>
-    <button id="resetButton" onclick="resetProgress()">İlerlemeyi Sıfırla</button>
-
-    <!-- Günlük Görevler -->
     <div id="tasks">
         <h3>Günlük Görevler</h3>
         <p id="taskStatus">Bugün 5 kelime öğren: <span id="taskProgress">0/5</span></p>
     </div>
 
-    <!-- Quiz, İstatistikler, Rozetler aynı -->
-
     <script>
         const words = [
             { latin: "Imperium", meaning: "Güç, otorite", learned: false, category: "Siyasi", wrongAttempts: 0, correctAttempts: 0, image: "", favorite: false },
-              { latin: "Imperium", meaning: "Güç, otorite", learned: false, category: "Siyasi", wrongAttempts: 0, correctAttempts: 0, image: "" },
             { latin: "Caesar", meaning: "Sezar, imparator", learned: false, category: "Siyasi", wrongAttempts: 0, correctAttempts: 0, image: "" },
             { latin: "Augustus", meaning: "Yüce, ilk imparator unvanı", learned: false, category: "Siyasi", wrongAttempts: 0, correctAttempts: 0, image: "" },
             { latin: "Senatus", meaning: "Senato", learned: false, category: "Siyasi", wrongAttempts: 0, correctAttempts: 0, image: "" },
@@ -351,51 +245,23 @@
             { latin: "Cor", meaning: "Kalp", learned: false, category: "Günlük Yaşam", wrongAttempts: 0, correctAttempts: 0, image: "" },
             { latin: "Vita", meaning: "Hayat", learned: false, category: "Günlük Yaşam", wrongAttempts: 0, correctAttempts: 0, image: "" },
             { latin: "Mors", meaning: "Ölüm", learned: false, category: "Günlük Yaşam", wrongAttempts: 0, correctAttempts: 0, image: "" },
-            { latin: "Sepulcrum", meaning: "Mezar", learned: false, category: "Günlük Yaşam", wrongAttempts: 0, correctAttempts: 0, image: "" },
-            { latin: "Monumentum", meaning: "Anıt", learned: false, category: "Günlük Yaşam", wrongAttempts: 0, correctAttempts: 0, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Arch_of_Constantine.jpg/320px-Arch_of_Constantine.jpg" }
-            // ... 199 kelimeyi buraya ekle (önceki kodundan kopyala)
+            { latin: "Sepulcrum", meaning: "Mezar", learned: false, category: "Günlük Yaşam", wrongAttempts: 0, correctAttempts: 0, image: "" }
         ];
+        let currentIndex = 0, dailyTaskProgress = 0, DAILY_GOAL = 5;
 
-        let currentIndex = 0;
-        let dailyTaskProgress = 0;
-        const DAILY_GOAL = 5;
-
-        // Sayfa yüklenirken verileri al
         window.onload = function() {
             const savedWords = JSON.parse(localStorage.getItem("learnedWords"));
-            if (savedWords) {
-                words.forEach((word, index) => {
-                    word.learned = savedWords[index].learned;
-                    word.favorite = savedWords[index].favorite || false;
-                    word.wrongAttempts = savedWords[index].wrongAttempts || 0;
-                    word.correctAttempts = savedWords[index].correctAttempts || 0;
-                });
-            }
+            if (savedWords) words.forEach((w, i) => Object.assign(w, savedWords[i]));
             const savedTask = JSON.parse(localStorage.getItem("dailyTask"));
-            if (savedTask && new Date().toDateString() === new Date(savedTask.date).toDateString()) {
-                dailyTaskProgress = savedTask.progress;
-            } else {
-                dailyTaskProgress = 0;
-            }
-            updateProgress();
-            updateLevel();
-            updateTask();
-            displayWord();
+            if (savedTask && new Date().toDateString() === new Date(savedTask.date).toDateString()) dailyTaskProgress = savedTask.progress;
+            updateProgress(); updateLevel(); updateTask(); displayWord();
         };
 
-        // Kelimeyi göster
         function displayWord() {
             document.getElementById("word").innerText = words[currentIndex].latin;
             document.getElementById("meaning").innerText = words[currentIndex].meaning;
             document.getElementById("meaning").style.display = "none";
             document.getElementById("favoriteButton").innerText = words[currentIndex].favorite ? "★ Favorilerden Çıkar" : "★ Favorilere Ekle";
-            const img = document.getElementById("wordImage");
-            if (words[currentIndex].image) {
-                img.src = words[currentIndex].image;
-                img.style.display = "block";
-            } else {
-                img.style.display = "none";
-            }
         }
 
         function toggleMeaning() {
@@ -408,25 +274,23 @@
             displayWord();
         }
 
-        // Favori özelliği
         function toggleFavorite() {
             words[currentIndex].favorite = !words[currentIndex].favorite;
             document.getElementById("favoriteButton").innerText = words[currentIndex].favorite ? "★ Favorilerden Çıkar" : "★ Favorilere Ekle";
             localStorage.setItem("learnedWords", JSON.stringify(words));
         }
 
-        // Arama ve öneriler
         function searchWord() {
             const query = document.getElementById("search").value.toLowerCase();
             const suggestions = document.getElementById("suggestions");
             suggestions.innerHTML = "";
             if (query) {
-                const matches = words.filter(word => word.latin.toLowerCase().includes(query)).slice(0, 5);
-                matches.forEach(match => {
+                const matches = words.filter(w => w.latin.toLowerCase().includes(query)).slice(0, 5);
+                matches.forEach(m => {
                     const div = document.createElement("div");
-                    div.innerText = match.latin;
+                    div.innerText = m.latin;
                     div.onclick = () => {
-                        currentIndex = words.indexOf(match);
+                        currentIndex = words.indexOf(m);
                         displayWord();
                         suggestions.style.display = "none";
                         document.getElementById("search").value = "";
@@ -439,7 +303,12 @@
             }
         }
 
-        // Öğrenildi
+        document.addEventListener("click", (e) => {
+            if (!document.getElementById("search").contains(e.target)) {
+                document.getElementById("suggestions").style.display = "none";
+            }
+        });
+
         function markAsLearned() {
             if (!words[currentIndex].learned) {
                 words[currentIndex].learned = true;
@@ -454,30 +323,25 @@
             nextWord();
         }
 
-        // İlerleme güncelle
         function updateProgress() {
-            const learnedCount = words.filter(word => word.learned).length;
+            const learnedCount = words.filter(w => w.learned).length;
             document.getElementById("learnedCount").innerText = learnedCount;
             document.getElementById("totalCount").innerText = words.length;
         }
 
-        // Seviye sistemi
         function updateLevel() {
-            const learnedCount = words.filter(word => word.learned).length;
+            const learnedCount = words.filter(w => w.learned).length;
             const level = Math.floor(learnedCount / 20);
             const levelNames = ["Acemi", "Asker", "Centurio", "Legatus", "Consul", "İmparator", "Augustus"];
             document.getElementById("levelName").innerText = levelNames[Math.min(level, levelNames.length - 1)];
         }
 
-        // Günlük görevler
         function updateTask() {
             document.getElementById("taskProgress").innerText = `${dailyTaskProgress}/${DAILY_GOAL}`;
             if (dailyTaskProgress >= DAILY_GOAL) {
-                document.getElementById("taskStatus").innerText += " - Tamamlandı! Ödül: Günlük Kahraman Rozeti";
+                document.getElementById("taskStatus").innerText = `Bugün 5 kelime öğren: ${dailyTaskProgress}/${DAILY_GOAL} - Tamamlandı! Ödül: Günlük Kahraman Rozeti`;
             }
         }
-
-        // Diğer fonksiyonlar (nextWord, speakWord, vb.) aynı
     </script>
 </body>
 </html>
