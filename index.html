@@ -47,15 +47,20 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: background-color 0.3s, box-shadow 0.3s;
         }
         button:hover {
             background-color: #45a049;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
         #resetButton {
             background-color: #f44336;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         #resetButton:hover {
             background-color: #d32f2f;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
         input[type="time"], input[type="text"], select {
             padding: 5px;
@@ -154,7 +159,7 @@
     </div>
 
     <script>
-        // 200 Kelimelik Tam Liste
+        // 200 Kelimelik Tam Liste (Önceki listeden aynı)
         const words = [
             { latin: "Imperium", meaning: "Güç, otorite", learned: false, category: "Siyasi", wrongAttempts: 0, correctAttempts: 0, image: "" },
             { latin: "Caesar", meaning: "Sezar, imparator", learned: false, category: "Siyasi", wrongAttempts: 0, correctAttempts: 0, image: "" },
