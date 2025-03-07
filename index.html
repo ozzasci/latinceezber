@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -16,6 +17,50 @@
         body.dark {
             background-color: #333;
             color: #fff;
+        }
+        #registerOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        #registerForm {
+            background: linear-gradient(135deg, #fff, #f0f0f0);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+            width: 300px;
+            text-align: center;
+        }
+        .dark #registerForm {
+            background: linear-gradient(135deg, #444, #555);
+        }
+        #registerForm input, #registerForm button {
+            margin: 10px 0;
+            padding: 8px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        #registerForm button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #registerForm button:hover {
+            background-color: #45a049;
+        }
+        #mainContent {
+            display: none;
         }
         .card {
             background: linear-gradient(135deg, #fff, #f0f0f0);
@@ -47,11 +92,11 @@
             font-style: italic;
         }
         #history {
-    display: none;
-    font-size: 14px;
-    color: #888;
-    margin-top: 10px;
-}
+            display: none;
+            font-size: 14px;
+            color: #888;
+            margin-top: 10px;
+        }
         .dropdown {
             margin: 10px auto;
             max-width: 600px;
@@ -224,9 +269,8 @@
                 width: 100%;
             }
             .category-btn i {
-    margin-right: 8px;
-    font-size: 18px;
-
+                margin-right: 8px;
+                font-size: 18px;
             }
             .progress-bar {
                 width: 100%;
@@ -235,113 +279,200 @@
     </style>
 </head>
 <body class="light">
-    <h1>Roma Latince Kelime Ezber</h1>
-   
-<div class="card" id="card" onclick="toggleMeaning()">
-    <h2 id="word">Imperium</h2>
-    <p id="meaning">Güç, otorite</p>
-    <p id="history" style="display: none; font-size: 14px; color: #888;">Roma'da siyasi otorite ve komuta gücünü ifade eder.</p>
-    <img id="wordImage" src="" alt="" style="max-width: 100%; display: none;">
-</div>
-    <div class="dropdown">
-        <button class="dropdown-toggle" onclick="toggleDropdown('kelime-kontrolu')">Kelime Kontrolü</button>
-        <div class="dropdown-menu" id="kelime-kontrolu">
-            <button onclick="nextWord()">Sonraki Kelime</button>
-            <button onclick="markAsLearned()">Öğrenildi</button>
-            <button onclick="speakWord()">Dinle</button>
-        </div>
+    <!-- Kayıt overlay -->
+    <div id="registerOverlay">
+        <form id="registerForm">
+            <h2>Kayıt Ol</h2>
+            <input type="text" id="name" placeholder="İsim" required>
+            <input type="email" id="email" placeholder="E-posta" required>
+            <button type="submit">Kayıt Ol</button>
+        </form>
     </div>
 
-    <div class="dropdown">
-        <button class="dropdown-toggle" onclick="toggleDropdown('ayarlar')">Ayarlar</button>
-        <div class="dropdown-menu" id="ayarlar">
-            <button onclick="setReminder()">Hatırlatma Ayarla (5 sn)</button>
+    <!-- Ana içerik -->
+    <div id="mainContent">
+        <h1>Roma Latince Kelime Ezber</h1>
+        <div class="card" id="card" onclick="toggleMeaning()">
+            <h2 id="word">Imperium</h2>
+            <p id="meaning">Güç, otorite</p>
+            <p id="history" style="display: none; font-size: 14px; color: #888;">Roma'da siyasi otorite ve komuta gücünü ifade eder.</p>
+            <img id="wordImage" src="" alt="" style="max-width: 100%; display: none;">
+        </div>
+        <div class="dropdown">
+            <button class="dropdown-toggle" onclick="toggleDropdown('kelime-kontrolu')">Kelime Kontrolü</button>
+            <div class="dropdown-menu" id="kelime-kontrolu">
+                <button onclick="nextWord()">Sonraki Kelime</button>
+                <button onclick="markAsLearned()">Öğrenildi</button>
+                <button onclick="speakWord()">Dinle</button>
+            </div>
+        </div>
+        <div class="dropdown">
+            <button class="dropdown-toggle" onclick="toggleDropdown('ayarlar')">Ayarlar</button>
+            <div class="dropdown-menu" id="ayarlar">
+                <button onclick="setReminder()">Hatırlatma Ayarla (5 sn)</button>
+                <button onclick="setCustomReminder()">Zamanı Ayarla</button>
+                <button onclick="setDailyGoal()">Günlük Hedef Belirle</button>
+                <button onclick="checkDailyGoal()">Hedefi Kontrol Et</button>
+            </div>
+        </div>
+        <div class="dropdown">
+            <button class="dropdown-toggle" onclick="toggleDropdown('test-istatistik')">Test ve İstatistik</button>
+            <div class="dropdown-menu" id="test-istatistik">
+                <button onclick="startQuiz(true)">Çoktan Seçmeli Test</button>
+                <button onclick="startQuiz(false)">Yazılı Test</button>
+                <button onclick="startReviewQuiz()">Tekrar Testi</button>
+                <button onclick="showDetailedStats()">Detaylı İstatistikler</button>
+                <button onclick="calculateDifficulty()">Zor Kelimeleri Bul</button>
+            </div>
+        </div>
+        <div class="dropdown">
+            <button class="dropdown-toggle" onclick="toggleDropdown('diger')">Diğer</button>
+            <div class="dropdown-menu" id="diger">
+                <button onclick="addNewWord()">Yeni Kelime Ekle</button>
+                <button id="resetButton" onclick="resetProgress()">İlerlemeyi Sıfırla</button>
+                <button onclick="toggleTheme()">Tema Değiştir</button>
+                <button onclick="showReviewSection()">Tekrar Listesini Göster</button>
+            </div>
+        </div>
+        <p id="reminderStatus"></p>
+        <div>
+            <input type="text" id="search" placeholder="Kelime ara" onkeyup="searchWord()">
+        </div>
+        <div class="category-buttons">
+            <h3>Kategori Seç</h3>
+            <button class="category-btn" onclick="filterByCategory('Hepsi')"><i class="fas fa-globe"></i> Hepsi</button>
+            <button class="category-btn" onclick="filterByCategory('Siyasi')"><i class="fas fa-crown"></i> Siyasi</button>
+            <button class="category-btn" onclick="filterByCategory('Askeri')"><i class="fas fa-sword"></i> Askeri</button>
+            <button class="category-btn" onclick="filterByCategory('Günlük Yaşam')"><i class="fas fa-home"></i> Günlük Yaşam</button>
+        </div>
+        <div>
+            <h3>Zamanlanmış Hatırlatma</h3>
+            <input type="time" id="reminderTime">
             <button onclick="setCustomReminder()">Zamanı Ayarla</button>
-            <button onclick="setDailyGoal()">Günlük Hedef Belirle</button>
-            <button onclick="checkDailyGoal()">Hedefi Kontrol Et</button>
+            <p id="customReminderStatus"></p>
+        </div>
+        <div id="progress">
+            Öğrenilen Kelimeler: <span id="learnedCount">0</span> / <span id="totalCount">0</span>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+            </div>
+        </div>
+        <div id="reviewSection">
+            <h3>Bugün Tekrar Edilecekler</h3>
+            <div id="reviewList"></div>
+            <button onclick="hideReviewSection()">Kapat</button>
+        </div>
+        <div id="quizSection">
+            <h3 id="quizTitle">Test Modu</h3>
+            <p id="quizWord"></p>
+            <p>Kalan Süre: <span id="timer">60</span> sn</p>
+            <input type="text" id="userAnswer" placeholder="Anlamı yazın">
+            <div id="quizOptions" class="quiz-options"></div>
+            <button id="checkButton" onclick="checkAnswer()">Kontrol Et</button>
+            <button onclick="endQuiz()">Testi Bitir</button>
+            <p id="result"></p>
+            <p>Doğru: <span id="correctCount">0</span> | Yanlış: <span id="wrongCount">0</span></p>
+        </div>
+        <div id="stats">
+            <h3>İstatistikler</h3>
+            <p>En Çok Yanlış Yapılan Kelime: <span id="mostWrong"></span></p>
+            <button onclick="closeStats()">Kapat</button>
+        </div>
+        <button onclick="showStats()">İstatistikleri Göster</button>
+        <div id="badges">
+            Rozetler: <span id="badgeList">Henüz rozet yok</span>
         </div>
     </div>
 
-    <div class="dropdown">
-        <button class="dropdown-toggle" onclick="toggleDropdown('test-istatistik')">Test ve İstatistik</button>
-        <div class="dropdown-menu" id="test-istatistik">
-            <button onclick="startQuiz(true)">Çoktan Seçmeli Test</button>
-            <button onclick="startQuiz(false)">Yazılı Test</button>
-            <button onclick="startReviewQuiz()">Tekrar Testi</button>
-            <button onclick="showDetailedStats()">Detaylı İstatistikler</button>
-            <button onclick="calculateDifficulty()">Zor Kelimeleri Bul</button>
-        </div>
-    </div>
-
-    <div class="dropdown">
-        <button class="dropdown-toggle" onclick="toggleDropdown('diger')">Diğer</button>
-        <div class="dropdown-menu" id="diger">
-            <button onclick="addNewWord()">Yeni Kelime Ekle</button>
-            <button id="resetButton" onclick="resetProgress()">İlerlemeyi Sıfırla</button>
-            <button onclick="toggleTheme()">Tema Değiştir</button>
-            <button onclick="showReviewSection()">Tekrar Listesini Göster</button>
-        </div>
-    </div>
-
-    <p id="reminderStatus"></p>
-    <div>
-        <input type="text" id="search" placeholder="Kelime ara" onkeyup="searchWord()">
-    </div>
-   <div class="category-buttons">
-    <h3>Kategori Seç</h3>
-   
-<button class="category-btn" onclick="filterByCategory('Hepsi')"><i class="fas fa-globe"></i> Hepsi</button>
-<button class="category-btn" onclick="filterByCategory('Siyasi')"><i class="fas fa-crown"></i> Siyasi</button>
-<button class="category-btn" onclick="filterByCategory('Askeri')"><i class="fas fa-sword"></i> Askeri</button>
-<button class="category-btn" onclick="filterByCategory('Günlük Yaşam')"><i class="fas fa-home"></i> Günlük Yaşam</button>
-    <div>
-        <h3>Zamanlanmış Hatırlatma</h3>
-        <input type="time" id="reminderTime">
-        <button onclick="setCustomReminder()">Zamanı Ayarla</button>
-        <p id="customReminderStatus"></p>
-    </div>
-
-    <div id="progress">
-        Öğrenilen Kelimeler: <span id="learnedCount">0</span> / <span id="totalCount">0</span>
-        <div class="progress-bar">
-            <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
-        </div>
-    </div>
-
-    <div id="reviewSection">
-        <h3>Bugün Tekrar Edilecekler</h3>
-        <div id="reviewList"></div>
-        <button onclick="hideReviewSection()">Kapat</button>
-    </div>
-
-    <div id="quizSection">
-        <h3 id="quizTitle">Test Modu</h3>
-        <p id="quizWord"></p>
-        <p>Kalan Süre: <span id="timer">60</span> sn</p>
-        <input type="text" id="userAnswer" placeholder="Anlamı yazın">
-        <div id="quizOptions" class="quiz-options"></div>
-        <button id="checkButton" onclick="checkAnswer()">Kontrol Et</button>
-        <button onclick="endQuiz()">Testi Bitir</button>
-        <p id="result"></p>
-        <p>Doğru: <span id="correctCount">0</span> | Yanlış: <span id="wrongCount">0</span></p>
-    </div>
-
-    <div id="stats">
-        <h3>İstatistikler</h3>
-        <p>En Çok Yanlış Yapılan Kelime: <span id="mostWrong"></span></p>
-        <button onclick="closeStats()">Kapat</button>
-    </div>
-    <button onclick="showStats()">İstatistikleri Göster</button>
-
-    <div id="badges">
-        Rozetler: <span id="badgeList">Henüz rozet yok</span>
-    </div>
+    <!-- Firebase SDK (Opsiyonel) -->
+    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-firestore.js"></script>
 
     <script>
+        // Firebase yapılandırması (kendi projenden almalısın, şimdilik sahte bir config ile test ediyoruz)
+        const firebaseConfig = {
+            apiKey: "your-api-key",
+            authDomain: "your-auth-domain",
+            projectId: "your-project-id",
+            storageBucket: "your-storage-bucket",
+            messagingSenderId: "your-messaging-sender-id",
+            appId: "your-app-id"
+        };
+
+        // Firebase’i başlat (hata olsa bile devam etsin diye try-catch kullanıyoruz)
+        let db;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+        } catch (error) {
+            console.warn("Firebase başlatılamadı, yerel modda devam ediliyor:", error);
+        }
+
+        // İçeriği gösteren yardımcı fonksiyon
+        function showMainContent() {
+            document.getElementById('registerOverlay').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+        }
+
+        // Sayfa yüklenirken kayıt durumunu kontrol et
+        window.onload = function() {
+            if (localStorage.getItem('registered') === 'true') {
+                showMainContent();
+            }
+            const savedWords = JSON.parse(localStorage.getItem("learnedWords")) || [];
+            if (savedWords.length > 0) {
+                words.forEach((word, index) => {
+                    if (savedWords[index]) {
+                        word.learned = savedWords[index].learned;
+                        word.wrongAttempts = savedWords[index].wrongAttempts || 0;
+                        word.correctAttempts = savedWords[index].correctAttempts || 0;
+                        word.learnedDate = savedWords[index].learnedDate || null;
+                        word.nextReviewDate = savedWords[index].nextReviewDate || null;
+                        word.reviewLevel = savedWords[index].reviewLevel || 0;
+                    }
+                });
+            }
+            updateProgress();
+            updateBadges();
+            displayWord();
+        };
+
+        // Kayıt formu işlevi
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+
+            // Firebase’e kaydetmeye çalış, hata olsa bile içeriği göster
+            if (db) {
+                db.collection('users').add({
+                    name: name,
+                    email: email,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                })
+                .then(() => {
+                    console.log('Kayıt Firebase’e başarıyla eklendi');
+                })
+                .catch((error) => {
+                    console.error('Firebase kayıt hatası:', error);
+                })
+                .finally(() => {
+                    localStorage.setItem('registered', 'true');
+                    showMainContent();
+                    alert('Kayıt başarılı! Hoş geldiniz!');
+                });
+            } else {
+                // Firebase yoksa direkt içeriği göster
+                localStorage.setItem('registered', 'true');
+                showMainContent();
+                alert('Kayıt başarılı! Hoş geldiniz!');
+            }
+        });
+
         const words = [
             { latin: "Imperium", meaning: "Güç, otorite", history: "Roma'da siyasi otorite ve komuta gücünü ifade eder.", learned: false, category: "Siyasi", wrongAttempts: 0, correctAttempts: 0, image: "", learnedDate: null, nextReviewDate: null, reviewLevel: 0 },
-    { latin: "Legio", meaning: "Lejyon", history: "Roma ordusunun temel birimi, yaklaşık 5.000 askerden oluşurdu.", learned: false, category: "Askeri", wrongAttempts: 0, correctAttempts: 0, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Roman_legionary.jpg/320px-Roman_legionary.jpg", learnedDate: null, nextReviewDate: null, reviewLevel: 0 },
-           { latin: "Caesar", meaning: "Sezar, imparator", history: "Roma'da Julius Caesar'dan sonra imparatorlara verilen unvan, otorite ve liderlik sembolüydü.", learned: false, category: "Siyasi", wrongAttempts: 0, correctAttempts: 0, image: "", learnedDate: null, nextReviewDate: null, reviewLevel: 0 },
+            { latin: "Legio", meaning: "Lejyon", history: "Roma ordusunun temel birimi, yaklaşık 5.000 askerden oluşurdu.", learned: false, category: "Askeri", wrongAttempts: 0, correctAttempts: 0, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Roman_legionary.jpg/320px-Roman_legionary.jpg", learnedDate: null, nextReviewDate: null, reviewLevel: 0 },
+        { latin: "Caesar", meaning: "Sezar, imparator", history: "Roma'da Julius Caesar'dan sonra imparatorlara verilen unvan, otorite ve liderlik sembolüydü.", learned: false, category: "Siyasi", wrongAttempts: 0, correctAttempts: 0, image: "", learnedDate: null, nextReviewDate: null, reviewLevel: 0 },
     { latin: "Augustus", meaning: "Yüce, ilk imparator unvanı", history: "Roma'nın ilk imparatoru Octavianus'a verilen unvan, Pax Romana'nın başlangıcını simgeler.", learned: false, category: "Siyasi", wrongAttempts: 0, correctAttempts: 0, image: "", learnedDate: null, nextReviewDate: null, reviewLevel: 0 },
     { latin: "Senatus", meaning: "Senato", history: "Roma Cumhuriyeti'nde yasama ve yönetim organı, genellikle aristokratlardan oluşurdu.", learned: false, category: "Siyasi", wrongAttempts: 0, correctAttempts: 0, image: "", learnedDate: null, nextReviewDate: null, reviewLevel: 0 },
     { latin: "Consul", meaning: "Konsül", history: "Roma Cumhuriyeti'nde en yüksek iki yönetici, bir yıl görev yapar ve orduyu komuta ederdi.", learned: false, category: "Siyasi", wrongAttempts: 0, correctAttempts: 0, image: "", learnedDate: null, nextReviewDate: null, reviewLevel: 0 },
@@ -539,11 +670,9 @@
             { latin: "Vita", meaning: "Hayat", learned: false, category: "Günlük Yaşam", wrongAttempts: 0, correctAttempts: 0, image: "" },
             { latin: "Mors", meaning: "Ölüm", learned: false, category: "Günlük Yaşam", wrongAttempts: 0, correctAttempts: 0, image: "" },
             { latin: "Sepulcrum", meaning: "Mezar", learned: false, category: "Günlük Yaşam", wrongAttempts: 0, correctAttempts: 0, image: "" },
-            { latin: "Monumentum", meaning: "Anıt", learned: false, category: "Günlük Yaşam", wrongAttempts: 0, correctAttempts: 0, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Arch_of_Constantine.jpg/320px-Arch_of_Constantine.jpg" }   
-        ];
-            // Tam liste için orijinal 200 kelimeyi buraya ekleyebilirsiniz.
-const reviewIntervals = [1, 3, 7, 14, 30];
-
+            { latin: "Monumentum", meaning: "Anıt", learned: false, category: "Günlük Yaşam", wrongAttempts: 0, correctAttempts: 0, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Arch_of_Constantine.jpg/320px-Arch_of_Constantine.jpg" }
+];
+        const reviewIntervals = [1, 3, 7, 14, 30];
         let currentIndex = 0;
         let correctCount = 0;
         let wrongCount = 0;
@@ -556,53 +685,34 @@ const reviewIntervals = [1, 3, 7, 14, 30];
         const correctSound = new Audio('https://www.soundjay.com/buttons/beep-01a.mp3');
         const wrongSound = new Audio('https://www.soundjay.com/buttons/beep-02.mp3');
 
-        window.onload = function() {
-            const savedWords = JSON.parse(localStorage.getItem("learnedWords")) || [];
-            if (savedWords.length > 0) {
-                words.forEach((word, index) => {
-                    if (savedWords[index]) {
-                        word.learned = savedWords[index].learned;
-                        word.wrongAttempts = savedWords[index].wrongAttempts || 0;
-                        word.correctAttempts = savedWords[index].correctAttempts || 0;
-                        word.learnedDate = savedWords[index].learnedDate || null;
-                        word.nextReviewDate = savedWords[index].nextReviewDate || null;
-                        word.reviewLevel = savedWords[index].reviewLevel || 0;
-                    }
-                });
-            }
-            updateProgress();
-            updateBadges();
-            displayWord();
-        };
-
-       function displayWord() {
-    const card = document.getElementById("card");
-    card.classList.remove("visible");
-    setTimeout(() => {
-        document.getElementById("word").innerText = words[currentIndex].latin;
-        document.getElementById("meaning").innerText = words[currentIndex].meaning;
-        document.getElementById("meaning").style.display = "none";
-        const history = document.getElementById("history");
-        history.innerText = words[currentIndex].history || "Tarihsel bilgi yok.";
-        history.style.display = "none";
-        const img = document.getElementById("wordImage");
-        if (words[currentIndex].image) {
-            img.src = words[currentIndex].image;
-            img.style.display = "block";
-        } else {
-            img.style.display = "none";
+        function displayWord() {
+            const card = document.getElementById("card");
+            card.classList.remove("visible");
+            setTimeout(() => {
+                document.getElementById("word").innerText = words[currentIndex].latin;
+                document.getElementById("meaning").innerText = words[currentIndex].meaning;
+                document.getElementById("meaning").style.display = "none";
+                const history = document.getElementById("history");
+                history.innerText = words[currentIndex].history || "Tarihsel bilgi yok.";
+                history.style.display = "none";
+                const img = document.getElementById("wordImage");
+                if (words[currentIndex].image) {
+                    img.src = words[currentIndex].image;
+                    img.style.display = "block";
+                } else {
+                    img.style.display = "none";
+                }
+                card.classList.add("visible");
+            }, 50);
         }
-        card.classList.add("visible");
-    }, 50);
-}
 
-       function toggleMeaning() {
-    const meaning = document.getElementById("meaning");
-    const history = document.getElementById("history");
-    const isVisible = meaning.style.display === "block";
-    meaning.style.display = isVisible ? "none" : "block";
-    history.style.display = isVisible ? "none" : "block";
-}
+        function toggleMeaning() {
+            const meaning = document.getElementById("meaning");
+            const history = document.getElementById("history");
+            const isVisible = meaning.style.display === "block";
+            meaning.style.display = isVisible ? "none" : "block";
+            history.style.display = isVisible ? "none" : "block";
+        }
 
         function nextWord() {
             currentIndex = (currentIndex + 1) % words.length;
@@ -880,7 +990,7 @@ const reviewIntervals = [1, 3, 7, 14, 30];
             document.getElementById("wrongCount").innerText = wrongCount;
             localStorage.setItem("learnedWords", JSON.stringify(words));
             quizIndex++;
-            setTimeout(nextQuizWord, 500); // Görsel geri bildirim için kısa bir gecikme
+            setTimeout(nextQuizWord, 500);
         }
 
         function checkAnswer() {
@@ -922,7 +1032,7 @@ const reviewIntervals = [1, 3, 7, 14, 30];
             document.getElementById("wrongCount").innerText = wrongCount;
             localStorage.setItem("learnedWords", JSON.stringify(words));
             quizIndex++;
-            setTimeout(nextQuizWord, 500); // Görsel geri bildirim için kısa bir gecikme
+            setTimeout(nextQuizWord, 500);
         }
 
         function endQuiz() {
