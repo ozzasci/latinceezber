@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LEX ROMANA </title>
+    <title>LEX ROMANA</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -60,6 +60,7 @@
         }
         #mainContent {
             display: none;
+            position: relative;
         }
         .card {
             background: linear-gradient(135deg, #fff, #f0f0f0);
@@ -175,11 +176,24 @@
             margin-top: 20px;
             color: #FFD700;
         }
-        input[type="time"], input[type="text"] {
+        input[type="time"] {
             padding: 5px;
             margin: 5px;
             border-radius: 5px;
             border: 1px solid #ccc;
+        }
+        #searchContainer {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+        }
+        #search {
+            padding: 8px;
+            width: 200px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
         }
         .category-buttons {
             margin: 20px auto;
@@ -260,6 +274,108 @@
             background-color: #4CAF50;
             transition: width 0.5s ease;
         }
+        #analogClock {
+            background: radial-gradient(circle, #fff, #e0e0e0);
+            border: 3px solid #4CAF50;
+            border-radius: 50%;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 150px;
+            height: 150px;
+            transition: background 0.3s;
+            z-index: 1000;
+        }
+        .dark #analogClock {
+            background: radial-gradient(circle, #555, #444);
+            border-color: #666;
+        }
+        .clock-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        .hour-hand, .minute-hand, .second-hand {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom;
+            background: #333;
+            border-radius: 2px;
+            transition: transform 0.1s ease;
+        }
+        .hour-hand {
+            width: 5px;
+            height: 45px;
+            background: #4CAF50;
+        }
+        .minute-hand {
+            width: 3px;
+            height: 60px;
+            background: #2196F3;
+        }
+        .second-hand {
+            width: 1px;
+            height: 70px;
+            background: #f44336;
+        }
+        .clock-center {
+            width: 8px;
+            height: 8px;
+            background: #333;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        #userName {
+            font-size: 18px;
+            color: #4CAF50;
+            margin: 10px 0;
+        }
+        .dark #userName {
+            color: #1E88E5;
+        }
+        #chatSection {
+            margin: 20px auto;
+            max-width: 600px;
+            background: linear-gradient(135deg, #fff, #f0f0f0);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .dark #chatSection {
+            background: linear-gradient(135deg, #444, #555);
+        }
+        #chatMessages {
+            height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        #chatInput {
+            width: 70%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        #sendMessage {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #sendMessage:hover {
+            background-color: #45a049;
+        }
         @media (max-width: 600px) {
             .dropdown-toggle, .dropdown-menu {
                 width: 100%;
@@ -273,6 +389,38 @@
             }
             .progress-bar {
                 width: 100%;
+            }
+            #analogClock {
+                width: 100px;
+                height: 100px;
+                top: 5px;
+                right: 5px;
+            }
+            .hour-hand {
+                height: 30px;
+            }
+            .minute-hand {
+                height: 40px;
+            }
+            .second-hand {
+                height: 50px;
+            }
+            .clock-center {
+                width: 6px;
+                height: 6px;
+            }
+            #chatSection {
+                width: 100%;
+            }
+            #chatInput {
+                width: 60%;
+            }
+            #searchContainer {
+                top: 5px;
+                left: 5px;
+            }
+            #search {
+                width: 150px;
             }
         }
     </style>
@@ -291,6 +439,11 @@
     <!-- Ana içerik -->
     <div id="mainContent">
         <h1>LEX ROMANA</h1>
+        <div id="analogClock"></div>
+        <p id="userName"></p>
+        <div id="searchContainer">
+            <input type="text" id="search" placeholder="Kelime ara" onkeyup="searchWord()">
+        </div>
         <div class="card" id="card" onclick="toggleMeaning()">
             <h2 id="word">Imperium</h2>
             <p id="meaning">Güç, otorite</p>
@@ -322,6 +475,8 @@
                 <button onclick="startReviewQuiz()">Tekrar Testi</button>
                 <button onclick="showDetailedStats()">Detaylı İstatistikler</button>
                 <button onclick="calculateDifficulty()">Zor Kelimeleri Bul</button>
+                <button onclick="exportWrongWordsToPDF()">Yanlışları PDF Olarak İndir</button>
+                <button onclick="exportWrongWordsToWord()">Yanlışları Word Olarak İndir</button>
             </div>
         </div>
         <div class="dropdown">
@@ -334,11 +489,8 @@
             </div>
         </div>
         <div id="score">Puan: 0</div>
-        <div id="level">Seviye: Çırak</div>`
+        <div id="level">Seviye: Çırak</div>
         <p id="reminderStatus"></p>
-        <div>
-            <input type="text" id="search" placeholder="Kelime ara" onkeyup="searchWord()">
-        </div>
         <div class="category-buttons">
             <h3>Kategori Seç</h3>
             <button class="category-btn" onclick="filterByCategory('Hepsi')"><i class="fas fa-globe"></i> Hepsi</button>
@@ -351,6 +503,12 @@
             <input type="time" id="reminderTime">
             <button onclick="setCustomReminder()">Zamanı Ayarla</button>
             <p id="customReminderStatus"></p>
+        </div>
+        <div id="chatSection">
+            <h3>Sohbet Odası</h3>
+            <div id="chatMessages"></div>
+            <input type="text" id="chatInput" placeholder="Mesajınızı yazın...">
+            <button id="sendMessage" onclick="sendChatMessage()">Gönder</button>
         </div>
         <div id="progress">
             Öğrenilen Kelimeler: <span id="learnedCount">0</span> / <span id="totalCount">0</span>
@@ -385,12 +543,13 @@
         </div>
     </div>
 
-    <!-- Firebase SDK (Opsiyonel) -->
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-firestore.js"></script>
+    <!-- jsPDF Kütüphanesi -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <script>
-        // Firebase yapılandırması (kendi projenden almalısın, şimdilik sahte bir config ile test ediyoruz)
         const firebaseConfig = {
             apiKey: "your-api-key",
             authDomain: "your-auth-domain",
@@ -400,7 +559,6 @@
             appId: "your-app-id"
         };
 
-        // Firebase’i başlat (hata olsa bile devam etsin diye try-catch kullanıyoruz)
         let db;
         try {
             firebase.initializeApp(firebaseConfig);
@@ -409,13 +567,15 @@
             console.warn("Firebase başlatılamadı, yerel modda devam ediliyor:", error);
         }
 
-        // İçeriği gösteren yardımcı fonksiyon
+        const { jsPDF } = window.jspdf;
+
         function showMainContent() {
             document.getElementById('registerOverlay').style.display = 'none';
             document.getElementById('mainContent').style.display = 'block';
+            displayUserName();
+            loadChatMessages();
         }
 
-        // Sayfa yüklenirken kayıt durumunu kontrol et
         window.onload = function() {
             if (localStorage.getItem('registered') === 'true') {
                 showMainContent();
@@ -436,19 +596,19 @@
             updateProgress();
             updateBadges();
             displayWord();
+            createAnalogClock();
         };
 
-        // Kayıt formu işlevi
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
-	    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
-            alert('Lütfen geçerli bir e-posta adresi girin!');
-            return;}
+                alert('Lütfen geçerli bir e-posta adresi girin!');
+                return;
+            }
 
-            // Firebase’e kaydetmeye çalış, hata olsa bile içeriği göster
             if (db) {
                 db.collection('users').add({
                     name: name,
@@ -463,17 +623,17 @@
                 })
                 .finally(() => {
                     localStorage.setItem('registered', 'true');
+                    localStorage.setItem('userName', name);
                     showMainContent();
                     alert('Kayıt başarılı! Hoş geldiniz!');
                 });
             } else {
-                // Firebase yoksa direkt içeriği göster
                 localStorage.setItem('registered', 'true');
+                localStorage.setItem('userName', name);
                 showMainContent();
                 alert('Kayıt başarılı! Hoş geldiniz!');
             }
         });
-
         const words = [
             { latin: "Imperium", meaning: "Güç, otorite", history: "Roma'da siyasi otorite ve komuta gücünü ifade eder.", learned: false, category: "Siyasi", wrongAttempts: 0, correctAttempts: 0, image: "", learnedDate: null, nextReviewDate: null, reviewLevel: 0 },
             { latin: "Legio", meaning: "Lejyon", history: "Roma ordusunun temel birimi, yaklaşık 5.000 askerden oluşurdu.", learned: false, category: "Askeri", wrongAttempts: 0, correctAttempts: 0, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Roman_legionary.jpg/320px-Roman_legionary.jpg", learnedDate: null, nextReviewDate: null, reviewLevel: 0 },
@@ -690,7 +850,7 @@
         const correctSound = new Audio('https://www.soundjay.com/buttons/beep-01a.mp3');
         const wrongSound = new Audio('https://www.soundjay.com/buttons/beep-02.mp3');
 
-        function displayWord() {
+     function displayWord() {
             const card = document.getElementById("card");
             card.classList.remove("visible");
             setTimeout(() => {
@@ -719,12 +879,13 @@
             history.style.display = isVisible ? "none" : "block";
         }
 
-function updateLevel() {
-    const learnedCount = words.filter(word => word.learned).length;
-    let level = "Çırak";
-    if (learnedCount >= 10) level = "Usta";
-    if (learnedCount >= 20) level = "Bilge";
-    document.getElementById("level").innerText = `Seviye: ${level}`;}
+        function updateLevel() {
+            const learnedCount = words.filter(word => word.learned).length;
+            let level = "Çırak";
+            if (learnedCount >= 10) level = "Usta";
+            if (learnedCount >= 20) level = "Bilge";
+            document.getElementById("level").innerText = `Seviye: ${level}`;
+        }
 
         function nextWord() {
             currentIndex = (currentIndex + 1) % words.length;
@@ -755,13 +916,26 @@ function updateLevel() {
                 displayWord();
             }
         }
-let userScore = parseInt(localStorage.getItem("userScore")) || 0;
-function markAsLearned() {
-    // Mevcut kod...
-    userScore += 10;
-    localStorage.setItem("userScore", userScore);
-    document.getElementById("score").innerText = `Puan: ${userScore}`; // HTML’e `<div id="score">Puan: 0</div>` ekle
-}
+
+        let userScore = parseInt(localStorage.getItem("userScore")) || 0;
+        function markAsLearned() {
+            if (!words[currentIndex].learned) {
+                words[currentIndex].learned = true;
+                words[currentIndex].learnedDate = new Date().toISOString();
+                words[currentIndex].nextReviewDate = calculateNextReviewDate(0);
+                words[currentIndex].reviewLevel = 0;
+                localStorage.setItem("learnedWords", JSON.stringify(words));
+                userScore += 10;
+                localStorage.setItem("userScore", userScore);
+                document.getElementById("score").innerText = `Puan: ${userScore}`;
+                alert(`${words[currentIndex].latin} öğrenildi!`);
+                updateProgress();
+                updateBadges();
+            } else {
+                alert("Bu kelime zaten öğrenildi!");
+            }
+            nextWord();
+        }
 
         function filterByCategory(category) {
             currentCategory = category;
@@ -809,22 +983,6 @@ function markAsLearned() {
                 alert(`Zamanlanmış Hatırlatma:\n${reminderText}`);
                 document.getElementById("customReminderStatus").innerText = "Hatırlatma yapıldı!";
             }, timeDiff);
-        }
-
-        function markAsLearned() {
-            if (!words[currentIndex].learned) {
-                words[currentIndex].learned = true;
-                words[currentIndex].learnedDate = new Date().toISOString();
-                words[currentIndex].nextReviewDate = calculateNextReviewDate(0);
-                words[currentIndex].reviewLevel = 0;
-                localStorage.setItem("learnedWords", JSON.stringify(words));
-                alert(`${words[currentIndex].latin} öğrenildi!`);
-                updateProgress();
-                updateBadges();
-            } else {
-                alert("Bu kelime zaten öğrenildi!");
-            }
-            nextWord();
         }
 
         function calculateNextReviewDate(level) {
@@ -1166,6 +1324,147 @@ function markAsLearned() {
                 document.querySelectorAll(".dropdown-menu").forEach(m => m.style.display = "none");
             }
         });
+
+        function createAnalogClock() {
+            const clock = document.getElementById("analogClock");
+            clock.innerHTML = `
+                <div class="clock-face">
+                    <div class="hour-hand"></div>
+                    <div class="minute-hand"></div>
+                    <div class="second-hand"></div>
+                    <div class="clock-center"></div>
+                </div>
+            `;
+            updateClock();
+            setInterval(updateClock, 1000);
+        }
+
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours() % 12;
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+
+            const hourDeg = (hours * 30) + (minutes * 0.5);
+            const minuteDeg = minutes * 6;
+            const secondDeg = seconds * 6;
+
+            const hourHand = document.querySelector(".hour-hand");
+            const minuteHand = document.querySelector(".minute-hand");
+            const secondHand = document.querySelector(".second-hand");
+
+            hourHand.style.transform = `translateX(-50%) rotate(${hourDeg}deg)`;
+            minuteHand.style.transform = `translateX(-50%) rotate(${minuteDeg}deg)`;
+            secondHand.style.transform = `translateX(-50%) rotate(${secondDeg}deg)`;
+        }
+
+        function displayUserName() {
+            const userName = localStorage.getItem('userName') || 'Misafir';
+            document.getElementById('userName').innerText = `Hoş geldiniz, ${userName}!`;
+        }
+
+        function sendChatMessage() {
+            const messageInput = document.getElementById('chatInput');
+            const message = messageInput.value.trim();
+            const userName = localStorage.getItem('userName') || 'Misafir';
+            if (message) {
+                const timestamp = new Date().toLocaleTimeString();
+                const chatMessage = `${timestamp} - ${userName}: ${message}`;
+
+                if (db) {
+                    db.collection('chatMessages').add({
+                        user: userName,
+                        message: message,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    })
+                    .then(() => {
+                        messageInput.value = '';
+                        loadChatMessages();
+                    })
+                    .catch(error => console.error('Mesaj gönderme hatası:', error));
+                } else {
+                    const messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+                    messages.push(chatMessage);
+                    localStorage.setItem('chatMessages', JSON.stringify(messages));
+                    displayChatMessage(chatMessage);
+                    messageInput.value = '';
+                }
+            }
+        }
+
+        function displayChatMessage(message) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageElement = document.createElement('p');
+            messageElement.innerText = message;
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function loadChatMessages() {
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.innerHTML = '';
+            if (db) {
+                db.collection('chatMessages')
+                  .orderBy('timestamp', 'asc')
+                  .onSnapshot(snapshot => {
+                      chatMessages.innerHTML = '';
+                      snapshot.forEach(doc => {
+                          const data = doc.data();
+                          const timestamp = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleTimeString() : 'Bilinmeyen Zaman';
+                          const chatMessage = `${timestamp} - ${data.user}: ${data.message}`;
+                          displayChatMessage(chatMessage);
+                      });
+                  }, error => console.error('Mesaj yükleme hatası:', error));
+            } else {
+                const messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+                messages.forEach(message => displayChatMessage(message));
+            }
+        }
+
+        function exportWrongWordsToPDF() {
+            const wrongWords = words.filter(word => word.wrongAttempts > 0)
+                                   .sort((a, b) => b.wrongAttempts - a.wrongAttempts);
+            if (wrongWords.length === 0) {
+                alert("Henüz yanlış yapılan kelime yok!");
+                return;
+            }
+
+            const doc = new jsPDF();
+            doc.setFontSize(16);
+            doc.text("Yanlış Yapılan Kelimeler", 10, 10);
+            doc.setFontSize(12);
+            let y = 20;
+            wrongWords.forEach((word, index) => {
+                const text = `${index + 1}. ${word.latin} - ${word.meaning} (Yanlış: ${word.wrongAttempts})`;
+                doc.text(text, 10, y);
+                y += 10;
+                if (y > 280) {
+                    doc.addPage();
+                    y = 10;
+                }
+            });
+            doc.save("Yanlis_Kelimeler.pdf");
+        }
+
+        function exportWrongWordsToWord() {
+            const wrongWords = words.filter(word => word.wrongAttempts > 0)
+                                   .sort((a, b) => b.wrongAttempts - a.wrongAttempts);
+            if (wrongWords.length === 0) {
+                alert("Henüz yanlış yapılan kelime yok!");
+                return;
+            }
+
+            const content = [
+                "Yanlış Yapılan Kelimeler\n\n",
+                ...wrongWords.map((word, index) => `${index + 1}. ${word.latin} - ${word.meaning} (Yanlış: ${word.wrongAttempts})\n`)
+            ].join("");
+
+            const blob = new Blob([content], { type: "application/msword" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "Yanlis_Kelimeler.doc";
+            link.click();
+        }
     </script>
 </body>
 </html>
