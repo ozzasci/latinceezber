@@ -638,15 +638,26 @@
   appId: "1:670928361594:web:1e6933013e70e05d4243c3"
 };
 
-        let db;
-        try {
-            firebase.initializeApp(firebaseConfig);
-            db = firebase.firestore();
-            console.log("Firebase başarıyla başlatıldı.");
-        } catch (error) {
-            console.warn("Firebase başlatılamadı, yerel modda devam ediliyor:", error);
+      let db;
+        function initializeFirebase() {
+            if (typeof firebase === 'undefined') {
+                console.error("Firebase SDK yüklenemedi. İnternet bağlantınızı kontrol edin veya yerel sunucu kullandığınızdan emin olun.");
+                return;
+            }
+            try {
+                firebase.initializeApp(firebaseConfig);
+                db = firebase.firestore();
+                console.log("Firebase başarıyla başlatıldı.");
+            } catch (error) {
+                console.warn("Firebase başlatılamadı, yerel modda devam ediliyor:", error);
+            }
         }
-
+window.addEventListener('load', function() {
+            initializeFirebase();
+            if (localStorage.getItem('registered') === 'true') {
+                showMainContent();
+            }
+        });
         const { jsPDF } = window.jspdf;
 
         function showMainContent() {
