@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -221,6 +222,34 @@
         #timer {
             color: #f44336;
             font-weight: bold;
+        }
+        #quizTime {
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid #d4a017;
+            border-radius: 8px;
+            background-color: #f8f1e9;
+            font-family: 'Cinzel', serif;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+        .dark #quizTime {
+            background-color: #6b5e48;
+            border-color: #b8860b;
+            color: #fff;
+        }
+        #quizTime:hover, #quizTime:focus {
+            border-color: #8b0000;
+            outline: none;
+        }
+        #result small {
+            display: block;
+            margin-top: 5px;
+            color: #555;
+            font-size: 14px;
+        }
+        .dark #result small {
+            color: #ccc;
         }
         #badges {
             margin-top: 20px;
@@ -596,13 +625,20 @@
         </div>
         <div id="quizSection">
             <h3 id="quizTitle">Test Modu</h3>
+            <label for="quizTime">Test Süresi:</label>
+            <select id="quizTime">
+                <option value="30">30 saniye</option>
+                <option value="60" selected>60 saniye</option>
+                <option value="120">120 saniye</option>
+                <option value="300">5 dakika</option>
+            </select>
             <p id="quizWord"></p>
             <p>Kalan Süre: <span id="timer">60</span> sn</p>
             <input type="text" id="userAnswer" placeholder="Anlamı yazın">
             <div id="quizOptions" class="quiz-options"></div>
             <button id="checkButton" onclick="checkAnswer()">Kontrol Et</button>
             <button onclick="endQuiz()">Testi Bitir</button>
-            <p id="result"></p>
+            <div id="result"></div>
             <p>Doğru: <span id="correctCount">0</span> | Yanlış: <span id="wrongCount">0</span></p>
         </div>
         <div id="stats">
@@ -628,20 +664,20 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <script>
-        // Firebase yapılandırmasını buraya senin Firebase Console'dan aldığın bilgilerle güncelle!
-       const firebaseConfig = {
-  apiKey: "AIzaSyDjsTHNu_lDxK16_svP7A2tEVVQD26DKWc",
-  authDomain: "lexromana-7153b.firebaseapp.com",
-  projectId: "lexromana-7153b",
-  storageBucket: "lexromana-7153b.firebasestorage.app",
-  messagingSenderId: "670928361594",
-  appId: "1:670928361594:web:1e6933013e70e05d4243c3"
-};
+        // Firebase yapılandırması
+        const firebaseConfig = {
+            apiKey: "AIzaSyDjsTHNu_lDxK16_svP7A2tEVVQD26DKWc",
+            authDomain: "lexromana-7153b.firebaseapp.com",
+            projectId: "lexromana-7153b",
+            storageBucket: "lexromana-7153b.firebasestorage.app",
+            messagingSenderId: "670928361594",
+            appId: "1:670928361594:web:1e6933013e70e05d4243c3"
+        };
 
-      let db;
+        let db;
         function initializeFirebase() {
             if (typeof firebase === 'undefined') {
-                console.error("Firebase SDK yüklenemedi. İnternet bağlantınızı kontrol edin veya yerel sunucu kullandığınızdan emin olun.");
+                console.error("Firebase SDK yüklenemedi.");
                 return;
             }
             try {
@@ -652,12 +688,14 @@
                 console.warn("Firebase başlatılamadı, yerel modda devam ediliyor:", error);
             }
         }
-window.addEventListener('load', function() {
+
+        window.addEventListener('load', function() {
             initializeFirebase();
             if (localStorage.getItem('registered') === 'true') {
                 showMainContent();
             }
         });
+
         const { jsPDF } = window.jspdf;
 
         function showMainContent() {
@@ -732,7 +770,9 @@ window.addEventListener('load', function() {
             }
         });
 
-        const words = [
+        // Kelime listesi burada olmalı, ancak atlandı
+        
+  const words = [
             { latin: "Imperium", meaning: "Güç, otorite", history: "Roma'da siyasi otorite ve komuta gücünü ifade eder.", learned: false, category: "Siyasi", wrongAttempts: 0, correctAttempts: 0, image: "", learnedDate: null, nextReviewDate: null, leitnerBox: 0 },
             { latin: "Legio", meaning: "Lejyon", history: "Roma ordusunun temel birimi, yaklaşık 5.000 askerden oluşurdu.", learned: false, category: "Askeri", wrongAttempts: 0, correctAttempts: 0, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Roman_legionary.jpg/320px-Roman_legionary.jpg", learnedDate: null, nextReviewDate: null, leitnerBox: 0 },
             { latin: "Monumentum", meaning: "Anıt", learned: false, category: "Günlük Yaşam", wrongAttempts: 0, correctAttempts: 0, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Arch_of_Constantine.jpg/320px-Arch_of_Constantine.jpg", learnedDate: null, nextReviewDate: null, leitnerBox: 0 },
@@ -935,17 +975,20 @@ window.addEventListener('load', function() {
             { latin: "Mors", meaning: "Ölüm", learned: false, category: "Günlük Yaşam", wrongAttempts: 0, correctAttempts: 0, image: "" },
             { latin: "Sepulcrum", meaning: "Mezar", learned: false, category: "Günlük Yaşam", wrongAttempts: 0, correctAttempts: 0, image: "" }
         ];
-        const leitnerIntervals = [1, 3, 7, 14, 30];
+
         let currentIndex = 0;
-        let correctCount = 0;
-        let wrongCount = 0;
-        let timerInterval;
         let currentCategory = "Hepsi";
         let quizWords = [];
         let quizIndex = 0;
+        let correctCount = 0;
+        let wrongCount = 0;
+        let timerInterval;
+        let userScore = 0;
         let isMultipleChoice = false;
         let isMultiplayer = false;
-        let multiplayerScores = {};
+        let dailyGoal = 5;
+
+        const leitnerIntervals = [1, 2, 4, 7, 14, 30];
 
         const correctSound = new Audio('https://www.soundjay.com/buttons/beep-01a.mp3');
         const wrongSound = new Audio('https://www.soundjay.com/buttons/beep-02.mp3');
@@ -957,15 +1000,13 @@ window.addEventListener('load', function() {
                 document.getElementById("word").innerText = words[currentIndex].latin;
                 document.getElementById("meaning").innerText = words[currentIndex].meaning;
                 document.getElementById("meaning").style.display = "none";
-                const history = document.getElementById("history");
-                history.innerText = words[currentIndex].history || "Tarihsel bilgi yok.";
-                history.style.display = "none";
-                const img = document.getElementById("wordImage");
+                document.getElementById("history").innerText = words[currentIndex].history || "Tarihsel bilgi yok.";
+                document.getElementById("history").style.display = "none";
                 if (words[currentIndex].image) {
-                    img.src = words[currentIndex].image;
-                    img.style.display = "block";
+                    document.getElementById("wordImage").src = words[currentIndex].image;
+                    document.getElementById("wordImage").style.display = "block";
                 } else {
-                    img.style.display = "none";
+                    document.getElementById("wordImage").style.display = "none";
                 }
                 card.classList.add("visible");
             }, 50);
@@ -974,27 +1015,33 @@ window.addEventListener('load', function() {
         function toggleMeaning() {
             const meaning = document.getElementById("meaning");
             const history = document.getElementById("history");
-            const isVisible = meaning.style.display === "block";
-            meaning.style.display = isVisible ? "none" : "block";
-            history.style.display = isVisible ? "none" : "block";
-        }
-
-        function updateLevel() {
-            const learnedCount = words.filter(word => word.learned).length;
-            let level = "Çırak";
-            if (learnedCount >= 10) level = "Usta";
-            if (learnedCount >= 20) level = "Bilge";
-            document.getElementById("level").innerText = `Seviye: ${level}`;
+            meaning.style.display = meaning.style.display === "none" ? "block" : "none";
+            history.style.display = history.style.display === "none" ? "block" : "none";
         }
 
         function nextWord() {
             currentIndex = (currentIndex + 1) % words.length;
-            if (currentCategory !== "Hepsi") {
-                while (words[currentIndex].category !== currentCategory) {
-                    currentIndex = (currentIndex + 1) % words.length;
-                }
-            }
             displayWord();
+        }
+
+        function markAsLearned() {
+            if (!words[currentIndex].learned) {
+                words[currentIndex].learned = true;
+                words[currentIndex].learnedDate = new Date().toISOString();
+                words[currentIndex].leitnerBox = 0;
+                words[currentIndex].nextReviewDate = calculateNextReviewDate(0);
+                localStorage.setItem("learnedWords", JSON.stringify(words));
+                updateProgress();
+                updateBadges();
+                alert(`"${words[currentIndex].latin}" öğrenildi olarak işaretlendi!`);
+            }
+            nextWord();
+        }
+
+        function calculateNextReviewDate(box) {
+            const now = new Date();
+            now.setDate(now.getDate() + leitnerIntervals[box]);
+            return now.toISOString();
         }
 
         function speakWord() {
@@ -1003,106 +1050,73 @@ window.addEventListener('load', function() {
             speechSynthesis.speak(utterance);
         }
 
-        function toggleTheme() {
-            document.body.classList.toggle("dark");
-            document.body.classList.toggle("light");
-        }
-
-        function searchWord() {
-            const query = document.getElementById("search").value.toLowerCase();
-            const found = words.find(word => word.latin.toLowerCase().includes(query));
-            if (found) {
-                currentIndex = words.indexOf(found);
-                displayWord();
+        function toggleDropdown(id) {
+            const dropdown = document.getElementById(id);
+            const isVisible = dropdown.style.display === "block";
+            document.querySelectorAll(".dropdown-menu").forEach(menu => menu.style.display = "none");
+            if (!isVisible) {
+                dropdown.style.display = "block";
             }
         }
 
-        let userScore = parseInt(localStorage.getItem("userScore")) || 0;
-        function markAsLearned() {
-            if (!words[currentIndex].learned) {
-                words[currentIndex].learned = true;
-                words[currentIndex].learnedDate = new Date().toISOString();
-                words[currentIndex].nextReviewDate = calculateNextReviewDate(words[currentIndex].leitnerBox);
-                localStorage.setItem("learnedWords", JSON.stringify(words));
-                userScore += 10;
-                localStorage.setItem("userScore", userScore);
-                document.getElementById("score").innerText = `Puan: ${userScore}`;
-                updateFirebaseScore(userScore);
-                alert(`${words[currentIndex].latin} öğrenildi!`);
-                updateProgress();
-                updateBadges();
-            } else {
-                alert("Bu kelime zaten öğrenildi!");
+        document.addEventListener("click", function(event) {
+            if (!event.target.closest(".dropdown")) {
+                document.querySelectorAll(".dropdown-menu").forEach(menu => menu.style.display = "none");
             }
-            nextWord();
-        }
-
-        function filterByCategory(category) {
-            currentCategory = category;
-            currentIndex = 0;
-            if (category !== "Hepsi") {
-                while (words[currentIndex].category !== category) {
-                    currentIndex = (currentIndex + 1) % words.length;
-                }
-            }
-            displayWord();
-        }
+        });
 
         function setReminder() {
-            document.getElementById("reminderStatus").innerText = "Hatırlatma ayarlandı! 5 saniye sonra...";
             setTimeout(() => {
-                const randomWords = getRandomWords(10);
-                const reminderText = randomWords.map((word, index) => `${index + 1}. ${word.latin} - ${word.meaning}`).join("\n");
-                alert(`Hatırlatma:\n${reminderText}`);
-                document.getElementById("reminderStatus").innerText = "";
+                alert("Kelime çalışma zamanı!");
+                document.getElementById("reminderStatus").innerText = "Hatırlatma tamamlandı!";
             }, 5000);
-        }
-
-        function getRandomWords(count) {
-            const unlearned = words.filter(word => !word.learned && (currentCategory === "Hepsi" || word.category === currentCategory));
-            const shuffled = unlearned.length > 0 ? unlearned : words.filter(word => currentCategory === "Hepsi" || word.category === currentCategory);
-            return shuffled.sort(() => 0.5 - Math.random()).slice(0, Math.min(count, shuffled.length));
+            document.getElementById("reminderStatus").innerText = "Hatırlatma 5 saniye içinde!";
         }
 
         function setCustomReminder() {
-            const time = document.getElementById("reminderTime").value;
-            if (!time) {
+            const reminderTime = document.getElementById("reminderTime").value;
+            if (!reminderTime) {
                 alert("Lütfen bir saat seçin!");
                 return;
             }
-            const [hours, minutes] = time.split(":");
+            const [hours, minutes] = reminderTime.split(":");
             const now = new Date();
-            const reminder = new Date();
-            reminder.setHours(hours, minutes, 0, 0);
-            if (reminder < now) reminder.setDate(reminder.getDate() + 1);
-            const timeDiff = reminder - now;
-            document.getElementById("customReminderStatus").innerText = `Hatırlatma ${hours}:${minutes} için ayarlandı!`;
+            const reminderDate = new Date();
+            reminderDate.setHours(hours, minutes, 0, 0);
+            if (reminderDate < now) {
+                reminderDate.setDate(reminderDate.getDate() + 1);
+            }
+            const timeDiff = reminderDate - now;
             setTimeout(() => {
-                const randomWords = getRandomWords(10);
-                const reminderText = randomWords.map((word, index) => `${index + 1}. ${word.latin} - ${word.meaning}`).join("\n");
-                alert(`Zamanlanmış Hatırlatma:\n${reminderText}`);
-                document.getElementById("customReminderStatus").innerText = "Hatırlatma yapıldı!";
+                alert("Kelime çalışma zamanı!");
+                document.getElementById("customReminderStatus").innerText = "Hatırlatma tamamlandı!";
             }, timeDiff);
+            document.getElementById("customReminderStatus").innerText = `Hatırlatma ${reminderTime} için ayarlandı!`;
         }
 
-        function calculateNextReviewDate(box) {
-            const now = new Date();
-            const daysToAdd = leitnerIntervals[box] || 30;
-            now.setDate(now.getDate() + daysToAdd);
-            return now.toISOString();
+        function setDailyGoal() {
+            const goal = prompt("Günlük öğrenme hedefinizi girin (kelime sayısı):", dailyGoal);
+            if (goal && !isNaN(goal) && goal > 0) {
+                dailyGoal = parseInt(goal);
+                alert(`Günlük hedef ${dailyGoal} kelime olarak ayarlandı!`);
+            } else {
+                alert("Lütfen geçerli bir sayı girin!");
+            }
         }
 
-        function updateProgress() {
-            const learnedCount = words.filter(word => word.learned).length;
-            const totalCount = words.length;
-            const progressPercentage = (learnedCount / totalCount) * 100;
-            document.getElementById("learnedCount").innerText = learnedCount;
-            document.getElementById("totalCount").innerText = totalCount;
-            document.getElementById("progressFill").style.width = `${progressPercentage}%`;
+        function checkDailyGoal() {
+            const today = new Date().toISOString().split("T")[0];
+            const learnedToday = words.filter(word => word.learnedDate && word.learnedDate.startsWith(today)).length;
+            const remaining = dailyGoal - learnedToday;
+            if (remaining <= 0) {
+                alert(`Tebrikler! Bugünkü ${dailyGoal} kelime hedefinize ulaştınız!`);
+            } else {
+                alert(`Bugün ${learnedToday} kelime öğrendiniz. Hedefinize ulaşmak için ${remaining} kelime daha öğrenmelisiniz!`);
+            }
         }
 
         function resetProgress() {
-            if (confirm("İlerlemeyi sıfırlamak istediğinize emin misiniz?")) {
+            if (confirm("Tüm ilerlemeyi sıfırlamak istediğinizden emin misiniz?")) {
                 words.forEach(word => {
                     word.learned = false;
                     word.wrongAttempts = 0;
@@ -1111,16 +1125,34 @@ window.addEventListener('load', function() {
                     word.nextReviewDate = null;
                     word.leitnerBox = 0;
                 });
-                localStorage.removeItem("learnedWords");
-                userScore = 0;
-                localStorage.setItem("userScore", userScore);
-                document.getElementById("score").innerText = `Puan: ${userScore}`;
-                updateFirebaseScore(userScore);
+                localStorage.setItem("learnedWords", JSON.stringify(words));
                 updateProgress();
                 updateBadges();
+                userScore = 0;
+                updateScoreAndLevel();
                 alert("İlerleme sıfırlandı!");
-                displayWord();
             }
+        }
+
+        function updateProgress() {
+            const learnedCount = words.filter(word => word.learned).length;
+            const totalCount = words.length;
+            document.getElementById("learnedCount").innerText = learnedCount;
+            document.getElementById("totalCount").innerText = totalCount;
+            const progressPercentage = (learnedCount / totalCount) * 100;
+            document.getElementById("progressFill").style.width = `${progressPercentage}%`;
+        }
+
+        function filterByCategory(category) {
+            currentCategory = category;
+            currentIndex = 0;
+            const filteredWords = words.filter(word => currentCategory === "Hepsi" || word.category === currentCategory);
+            if (filteredWords.length === 0) {
+                alert("Bu kategoride kelime yok!");
+                return;
+            }
+            currentIndex = words.indexOf(filteredWords[0]);
+            displayWord();
         }
 
         function startQuiz(multipleChoice) {
@@ -1136,7 +1168,7 @@ window.addEventListener('load', function() {
             quizIndex = 0;
             document.getElementById("correctCount").innerText = correctCount;
             document.getElementById("wrongCount").innerText = wrongCount;
-            document.getElementById("result").innerText = "";
+            document.getElementById("result").innerHTML = "";
             document.getElementById("quizTitle").innerText = multipleChoice ? "Çoktan Seçmeli Test" : "Yazılı Test";
             document.getElementById("userAnswer").style.display = multipleChoice ? "none" : "block";
             document.getElementById("checkButton").style.display = multipleChoice ? "none" : "block";
@@ -1153,7 +1185,7 @@ window.addEventListener('load', function() {
                 return;
             }
 
-            let timeLeft = 60;
+            let timeLeft = parseInt(document.getElementById("quizTime").value);
             document.getElementById("timer").innerText = timeLeft;
             timerInterval = setInterval(() => {
                 timeLeft--;
@@ -1179,7 +1211,7 @@ window.addEventListener('load', function() {
             quizIndex = 0;
             document.getElementById("correctCount").innerText = correctCount;
             document.getElementById("wrongCount").innerText = wrongCount;
-            document.getElementById("result").innerText = "";
+            document.getElementById("result").innerHTML = "";
             document.getElementById("quizTitle").innerText = "Tekrar Testi";
             document.getElementById("userAnswer").style.display = "none";
             document.getElementById("checkButton").style.display = "none";
@@ -1192,7 +1224,7 @@ window.addEventListener('load', function() {
                 return;
             }
 
-            let timeLeft = 60;
+            let timeLeft = parseInt(document.getElementById("quizTime").value);
             document.getElementById("timer").innerText = timeLeft;
             timerInterval = setInterval(() => {
                 timeLeft--;
@@ -1208,6 +1240,7 @@ window.addEventListener('load', function() {
         function startMultiplayerQuiz() {
             isMultipleChoice = true;
             isMultiplayer = true;
+            userScore = 0;
             document.getElementById("card").style.display = "none";
             document.getElementById("quizSection").style.display = "block";
             document.getElementById("quizSection").classList.remove("correct", "wrong");
@@ -1216,11 +1249,10 @@ window.addEventListener('load', function() {
             correctCount = 0;
             wrongCount = 0;
             quizIndex = 0;
-            multiplayerScores = {};
             document.getElementById("correctCount").innerText = correctCount;
             document.getElementById("wrongCount").innerText = wrongCount;
-            document.getElementById("result").innerText = "";
-            document.getElementById("quizTitle").innerText = "Çok Oyunculu Test";
+            document.getElementById("result").innerHTML = "";
+            document.getElementById("quizTitle").innerText = "Çok Oyunculu Test - Puan: " + userScore;
             document.getElementById("userAnswer").style.display = "none";
             document.getElementById("checkButton").style.display = "none";
             document.getElementById("quizOptions").innerHTML = "";
@@ -1236,7 +1268,7 @@ window.addEventListener('load', function() {
                 return;
             }
 
-            let timeLeft = 60;
+            let timeLeft = parseInt(document.getElementById("quizTime").value);
             document.getElementById("timer").innerText = timeLeft;
             timerInterval = setInterval(() => {
                 timeLeft--;
@@ -1246,20 +1278,7 @@ window.addEventListener('load', function() {
                 }
             }, 1000);
 
-            if (db) {
-                db.collection("multiplayerSessions").doc("current").set({
-                    quizWords: quizWords.map(w => w.latin),
-                    startTime: firebase.firestore.FieldValue.serverTimestamp(),
-                    active: true
-                });
-            }
-
             nextQuizWord();
-        }
-
-        function getReviewWords() {
-            const today = new Date().toISOString().split("T")[0];
-            return words.filter(word => word.learned && word.nextReviewDate && new Date(word.nextReviewDate).toISOString().split("T")[0] <= today);
         }
 
         function nextQuizWord() {
@@ -1269,41 +1288,82 @@ window.addEventListener('load', function() {
             }
             document.getElementById("quizWord").innerText = quizWords[quizIndex].latin;
             document.getElementById("userAnswer").value = "";
-            document.getElementById("result").innerText = "";
-            document.getElementById("quizOptions").innerHTML = "";
-
+            document.getElementById("result").innerHTML = "";
             if (isMultipleChoice) {
                 const options = generateOptions(quizWords[quizIndex].meaning);
                 const quizOptions = document.getElementById("quizOptions");
+                quizOptions.innerHTML = "";
                 options.forEach(option => {
-                    const btn = document.createElement("button");
-                    btn.innerText = option;
-                    btn.onclick = () => checkMultipleChoice(option, quizWords[quizIndex]);
-                    quizOptions.appendChild(btn);
+                    const button = document.createElement("button");
+                    button.innerText = option;
+                    button.onclick = () => checkMultipleChoice(option, quizWords[quizIndex]);
+                    quizOptions.appendChild(button);
                 });
             }
         }
 
         function generateOptions(correctAnswer) {
             const options = [correctAnswer];
-            const otherWords = words.filter(w => w.meaning !== correctAnswer);
-            while (options.length < 4 && otherWords.length > 0) {
-                const randomIndex = Math.floor(Math.random() * otherWords.length);
-                const randomMeaning = otherWords[randomIndex].meaning;
-                if (!options.includes(randomMeaning)) {
-                    options.push(randomMeaning);
-                    otherWords.splice(randomIndex, 1);
+            while (options.length < 4) {
+                const randomWord = words[Math.floor(Math.random() * words.length)].meaning;
+                if (!options.includes(randomWord)) {
+                    options.push(randomWord);
                 }
             }
             return options.sort(() => 0.5 - Math.random());
+        }
+
+        function checkAnswer() {
+            const userAnswer = document.getElementById("userAnswer").value.trim().toLowerCase();
+            const correctAnswer = quizWords[quizIndex].meaning.toLowerCase();
+            const wordIndex = words.indexOf(quizWords[quizIndex]);
+            const quizSection = document.getElementById("quizSection");
+            const history = quizWords[quizIndex].history || "Tarihsel bilgi yok.";
+
+            if (userAnswer === correctAnswer) {
+                document.getElementById("result").innerHTML = `Doğru! <br><small>${history}</small>`;
+                correctCount++;
+                words[wordIndex].correctAttempts++;
+                correctSound.play();
+                if (!words[wordIndex].learned) {
+                    words[wordIndex].learned = true;
+                    words[wordIndex].learnedDate = new Date().toISOString();
+                    words[wordIndex].leitnerBox = 0;
+                    updateProgress();
+                    updateBadges();
+                } else {
+                    words[wordIndex].leitnerBox = Math.min(words[wordIndex].leitnerBox + 1, leitnerIntervals.length - 1);
+                }
+                words[wordIndex].nextReviewDate = calculateNextReviewDate(words[wordIndex].leitnerBox);
+                quizSection.classList.remove("wrong");
+                quizSection.classList.add("correct");
+            } else {
+                document.getElementById("result").innerHTML = `Yanlış! Doğru cevap: ${correctAnswer} <br><small>${history}</small>`;
+                wrongCount++;
+                words[wordIndex].wrongAttempts++;
+                wrongSound.play();
+                if (words[wordIndex].learned) {
+                    words[wordIndex].leitnerBox = Math.max(words[wordIndex].leitnerBox - 1, 0);
+                    words[wordIndex].nextReviewDate = calculateNextReviewDate(words[wordIndex].leitnerBox);
+                }
+                quizSection.classList.remove("correct");
+                quizSection.classList.add("wrong");
+            }
+            document.getElementById("correctCount").innerText = correctCount;
+            document.getElementById("wrongCount").innerText = wrongCount;
+            localStorage.setItem("learnedWords", JSON.stringify(words));
+            quizIndex++;
+            setTimeout(nextQuizWord, 1000);
         }
 
         function checkMultipleChoice(selected, currentWord) {
             const correctAnswer = currentWord.meaning;
             const wordIndex = words.indexOf(currentWord);
             const quizSection = document.getElementById("quizSection");
+            const history = currentWord.history || "Tarihsel bilgi yok.";
+
             if (selected === correctAnswer) {
-                document.getElementById("result").innerText = "Doğru!";
+                document.getElementById("result").innerHTML = `Doğru! <br><small>${history}</small>`;
                 correctCount++;
                 words[wordIndex].correctAttempts++;
                 correctSound.play();
@@ -1323,7 +1383,7 @@ window.addEventListener('load', function() {
                     updateMultiplayerScore(userScore);
                 }
             } else {
-                document.getElementById("result").innerText = `Yanlış! Doğru cevap: ${correctAnswer}`;
+                document.getElementById("result").innerHTML = `Yanlış! Doğru cevap: ${correctAnswer} <br><small>${history}</small>`;
                 wrongCount++;
                 words[wordIndex].wrongAttempts++;
                 wrongSound.play();
@@ -1342,145 +1402,61 @@ window.addEventListener('load', function() {
                 updateBadges();
             }
             quizIndex++;
-            setTimeout(nextQuizWord, 500);
+            setTimeout(nextQuizWord, 1000);
         }
 
-        function checkAnswer() {
-            const userAnswer = document.getElementById("userAnswer").value.trim().toLowerCase();
-            const correctAnswer = quizWords[quizIndex].meaning.toLowerCase();
-            const wordIndex = words.indexOf(quizWords[quizIndex]);
-            const quizSection = document.getElementById("quizSection");
-            if (userAnswer === correctAnswer) {
-                document.getElementById("result").innerText = "Doğru!";
-                correctCount++;
-                words[wordIndex].correctAttempts++;
-                correctSound.play();
-                if (!words[wordIndex].learned) {
-                    words[wordIndex].learned = true;
-                    words[wordIndex].learnedDate = new Date().toISOString();
-                    words[wordIndex].leitnerBox = 0;
-                    updateProgress();
-                    updateBadges();
-                } else {
-                    words[wordIndex].leitnerBox = Math.min(words[wordIndex].leitnerBox + 1, leitnerIntervals.length - 1);
-                }
-                words[wordIndex].nextReviewDate = calculateNextReviewDate(words[wordIndex].leitnerBox);
-                quizSection.classList.remove("wrong");
-                quizSection.classList.add("correct");
-            } else {
-                document.getElementById("result").innerText = `Yanlış! Doğru cevap: ${correctAnswer}`;
-                wrongCount++;
-                words[wordIndex].wrongAttempts++;
-                wrongSound.play();
-                if (words[wordIndex].learned) {
-                    words[wordIndex].leitnerBox = Math.max(words[wordIndex].leitnerBox - 1, 0);
-                    words[wordIndex].nextReviewDate = calculateNextReviewDate(words[wordIndex].leitnerBox);
-                }
-                quizSection.classList.remove("correct");
-                quizSection.classList.add("wrong");
+        function updateMultiplayerScore(score) {
+            document.getElementById("quizTitle").innerText = `Çok Oyunculu Test - Puan: ${score}`;
+            if (db) {
+                const userName = localStorage.getItem("userName");
+                db.collection("users").where("name", "==", userName).get()
+                    .then(querySnapshot => {
+                        querySnapshot.forEach(doc => {
+                            doc.ref.update({ score: score });
+                        });
+                    });
             }
-            document.getElementById("correctCount").innerText = correctCount;
-            document.getElementById("wrongCount").innerText = wrongCount;
-            localStorage.setItem("learnedWords", JSON.stringify(words));
-            quizIndex++;
-            setTimeout(nextQuizWord, 500);
         }
 
         function endQuiz() {
             clearInterval(timerInterval);
             document.getElementById("card").style.display = "block";
             document.getElementById("quizSection").style.display = "none";
-            document.getElementById("quizSection").classList.remove("correct", "wrong");
             document.querySelectorAll(".dropdown-toggle").forEach(btn => btn.disabled = false);
             document.querySelectorAll(".dropdown-menu button").forEach(btn => btn.disabled = false);
-            if (isMultiplayer) {
-                alert(`Çok Oyunculu Test bitti!\nDoğru: ${correctCount}\nYanlış: ${wrongCount}\nPuanınız: ${userScore}`);
-                showLeaderboard();
-            } else {
-                alert(`Test bitti!\nDoğru: ${correctCount}\nYanlış: ${wrongCount}`);
-            }
-            displayWord();
             if (isMultiplayer && db) {
-                db.collection("multiplayerSessions").doc("current").update({ active: false });
-            }
-            isMultiplayer = false;
-        }
-
-        function updateMultiplayerScore(score) {
-            const userName = localStorage.getItem("userName") || "Misafir";
-            multiplayerScores[userName] = score;
-            if (db) {
+                const userName = localStorage.getItem("userName");
                 db.collection("users").where("name", "==", userName).get()
                     .then(querySnapshot => {
-                        querySnapshot.forEach(doc => {
-                            doc.ref.update({ score: score });
-                        });
+                        if (!querySnapshot.empty) {
+                            querySnapshot.forEach(doc => {
+                                doc.ref.update({ score: userScore });
+                            });
+                        }
                     });
             }
-            localStorage.setItem("userScore", score);
-            document.getElementById("score").innerText = `Puan: ${score}`;
+            alert(`Test bitti! Doğru: ${correctCount}, Yanlış: ${wrongCount}` + (isMultiplayer ? `\nToplam Puan: ${userScore}` : ""));
         }
 
-        function updateFirebaseScore(score) {
-            const userName = localStorage.getItem("userName") || "Misafir";
-            if (db) {
-                db.collection("users").where("name", "==", userName).get()
-                    .then(querySnapshot => {
-                        querySnapshot.forEach(doc => {
-                            doc.ref.update({ score: score });
-                        });
-                    });
-            }
-        }
-
-        function showLeaderboard() {
-            document.getElementById("leaderboardSection").style.display = "block";
-            const leaderboardList = document.getElementById("leaderboardList");
-            leaderboardList.innerHTML = "";
-            if (db) {
-                db.collection("users").orderBy("score", "desc").limit(10).get()
-                    .then(querySnapshot => {
-                        querySnapshot.forEach(doc => {
-                            const data = doc.data();
-                            const li = document.createElement("li");
-                            li.innerText = `${data.name}: ${data.score}`;
-                            leaderboardList.appendChild(li);
-                        });
-                    })
-                    .catch(error => console.error("Liderlik tablosu yüklenemedi:", error));
-            } else {
-                const localScores = multiplayerScores;
-                const sortedScores = Object.entries(localScores).sort((a, b) => b[1] - a[1]).slice(0, 10);
-                sortedScores.forEach(([name, score]) => {
-                    const li = document.createElement("li");
-                    li.innerText = `${name}: ${score}`;
-                    leaderboardList.appendChild(li);
-                });
-            }
-        }
-
-        function hideLeaderboard() {
-            document.getElementById("leaderboardSection").style.display = "none";
+        function getReviewWords() {
+            const today = new Date().toISOString().split("T")[0];
+            return words.filter(word => word.nextReviewDate && word.nextReviewDate.startsWith(today));
         }
 
         function showReviewSection() {
-            const reviewWords = getReviewWords();
             const reviewList = document.getElementById("reviewList");
             reviewList.innerHTML = "";
-            if (reviewWords.length === 0) {
-                reviewList.innerText = "Bugün tekrar edilecek kelime yok.";
-            } else {
-                reviewWords.forEach((word, index) => {
-                    const btn = document.createElement("button");
-                    btn.innerText = `${word.latin} (Kutu ${word.leitnerBox})`;
-                    btn.onclick = () => {
-                        currentIndex = words.indexOf(word);
-                        displayWord();
-                        hideReviewSection();
-                    };
-                    reviewList.appendChild(btn);
-                });
-            }
+            const reviewWords = getReviewWords();
+            reviewWords.forEach(word => {
+                const button = document.createElement("button");
+                button.innerText = word.latin;
+                button.onclick = () => {
+                    currentIndex = words.indexOf(word);
+                    displayWord();
+                    hideReviewSection();
+                };
+                reviewList.appendChild(button);
+            });
             document.getElementById("reviewSection").style.display = "block";
         }
 
@@ -1489,81 +1465,72 @@ window.addEventListener('load', function() {
         }
 
         function showStats() {
-            document.getElementById("stats").style.display = "block";
             const mostWrongWord = words.reduce((max, word) => word.wrongAttempts > max.wrongAttempts ? word : max, words[0]);
             document.getElementById("mostWrong").innerText = mostWrongWord ? `${mostWrongWord.latin} (${mostWrongWord.wrongAttempts} hata)` : "Veri yok";
+            document.getElementById("stats").style.display = "block";
         }
 
         function closeStats() {
             document.getElementById("stats").style.display = "none";
         }
 
-        function showDetailedStats() {
-            const learned = words.filter(w => w.learned).length;
-            const accuracy = (correctCount / (correctCount + wrongCount) * 100).toFixed(2) || 0;
-            const reviewPending = getReviewWords().length;
-            alert(`Detaylı İstatistikler:\nÖğrenilen: ${learned}\nDoğru: ${correctCount}\nYanlış: ${wrongCount}\nBaşarı: %${accuracy}\nBugün Tekrar Edilecek: ${reviewPending}`);
+        function calculateDifficulty() {
+            const difficultWords = words.filter(word => word.wrongAttempts >= 3);
+            if (difficultWords.length === 0) {
+                alert("Zor kelime bulunamadı!");
+            } else {
+                alert("Zor Kelimeler:\n" + difficultWords.map(w => `${w.latin} (${w.wrongAttempts} hata)`).join("\n"));
+            }
         }
 
-        function addNewWord() {
-            const latin = prompt("Latince kelimeyi girin:");
-            const meaning = prompt("Anlamını girin:");
-            const category = prompt("Kategoriyi girin (Siyasi, Askeri, Günlük Yaşam):");
-            if (latin && meaning && category) {
-                words.push({ latin, meaning, learned: false, category, wrongAttempts: 0, correctAttempts: 0, image: "", learnedDate: null, nextReviewDate: null, leitnerBox: 0 });
-                localStorage.setItem("learnedWords", JSON.stringify(words));
-                updateProgress();
-                alert("Kelime eklendi!");
+        function exportWrongWordsToPDF() {
+            const wrongWords = words.filter(word => word.wrongAttempts > 0);
+            if (wrongWords.length === 0) {
+                alert("Yanlış yapılan kelime yok!");
+                return;
             }
+            const doc = new jsPDF();
+            doc.setFont("helvetica");
+            doc.text("Yanlış Yapılan Kelimeler", 10, 10);
+            let y = 20;
+            wrongWords.forEach((word, index) => {
+                doc.text(`${index + 1}. ${word.latin} - ${word.meaning} (${word.wrongAttempts} hata)`, 10, y);
+                y += 10;
+            });
+            doc.save("Yanlis_Kelimeler.pdf");
+        }
+
+        function exportWrongWordsToWord() {
+            const wrongWords = words.filter(word => word.wrongAttempts > 0);
+            if (wrongWords.length === 0) {
+                alert("Yanlış yapılan kelime yok!");
+                return;
+            }
+            const content = wrongWords.map((word, index) => `${index + 1}. ${word.latin} - ${word.meaning} (${word.wrongAttempts} hata)`).join("\n");
+            const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "Yanlis_Kelimeler.txt";
+            link.click();
         }
 
         function updateBadges() {
             const learnedCount = words.filter(word => word.learned).length;
             let badges = [];
-            if (learnedCount >= 50) badges.push("Roma Çaylağı");
-            if (learnedCount >= 100) badges.push("Legatus");
-            if (learnedCount >= 200) badges.push("İmparator");
+            if (learnedCount >= 10) badges.push("Başlangıç Ustası");
+            if (learnedCount >= 50) badges.push("Kelime Savaşçısı");
+            if (learnedCount >= 100) badges.push("Lex Romana Bilgesi");
             document.getElementById("badgeList").innerText = badges.length > 0 ? badges.join(", ") : "Henüz rozet yok";
         }
 
-        function calculateDifficulty() {
-            words.forEach(word => {
-                const totalAttempts = word.correctAttempts + word.wrongAttempts;
-                word.difficulty = totalAttempts > 0 ? word.wrongAttempts / totalAttempts : 0;
-            });
-            const hardest = words.sort((a, b) => b.difficulty - a.difficulty)[0];
-            alert(`En Zor Kelime: ${hardest.latin} (Zorluk: ${hardest.difficulty.toFixed(2)})`);
+        function toggleTheme() {
+            document.body.classList.toggle("dark");
+            localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
         }
 
-        function setDailyGoal() {
-            const goal = parseInt(prompt("Günlük kelime hedefini girin:"));
-            if (goal) {
-                localStorage.setItem("dailyGoal", goal);
-                alert(`Günlük hedef: ${goal} kelime`);
-            }
+        if (localStorage.getItem("theme") === "dark") {
+            document.body.classList.add("dark");
         }
-
-        function checkDailyGoal() {
-            const goal = parseInt(localStorage.getItem("dailyGoal")) || 0;
-            const today = new Date().toDateString();
-            const learnedToday = words.filter(w => w.learned && w.learnedDate && new Date(w.learnedDate).toDateString() === today).length;
-            alert(`Hedef: ${goal}\nBugün Öğrenilen: ${learnedToday}`);
-        }
-
-        function toggleDropdown(id) {
-            const menu = document.getElementById(id);
-            const isVisible = menu.style.display === "block";
-            document.querySelectorAll(".dropdown-menu").forEach(m => m.style.display = "none");
-            if (!isVisible) {
-                menu.style.display = "block";
-            }
-        }
-
-        document.addEventListener("click", function(event) {
-            if (!event.target.closest(".dropdown")) {
-                document.querySelectorAll(".dropdown-menu").forEach(m => m.style.display = "none");
-            }
-        });
 
         function createAnalogClock() {
             const clock = document.getElementById("analogClock");
@@ -1585,125 +1552,129 @@ window.addEventListener('load', function() {
             const minutes = now.getMinutes();
             const seconds = now.getSeconds();
 
-            const hourDeg = (hours * 30) + (minutes * 0.5);
+            const hourDeg = (hours * 30) + (minutes / 2);
             const minuteDeg = minutes * 6;
             const secondDeg = seconds * 6;
 
-            const hourHand = document.querySelector(".hour-hand");
-            const minuteHand = document.querySelector(".minute-hand");
-            const secondHand = document.querySelector(".second-hand");
-
-            hourHand.style.transform = `translateX(-50%) rotate(${hourDeg}deg)`;
-            minuteHand.style.transform = `translateX(-50%) rotate(${minuteDeg}deg)`;
-            secondHand.style.transform = `translateX(-50%) rotate(${secondDeg}deg)`;
+            document.querySelector(".hour-hand").style.transform = `rotate(${hourDeg}deg)`;
+            document.querySelector(".minute-hand").style.transform = `rotate(${minuteDeg}deg)`;
+            document.querySelector(".second-hand").style.transform = `rotate(${secondDeg}deg)`;
         }
 
         function displayUserName() {
-            const userName = localStorage.getItem('userName') || 'Misafir';
-            document.getElementById('userName').innerText = `Hoş geldiniz, ${userName}!`;
+            const userName = localStorage.getItem("userName");
+            if (userName) {
+                document.getElementById("userName").innerText = `Hoş geldiniz, ${userName}!`;
+            }
+        }
+
+        function addNewWord() {
+            const latin = prompt("Latince kelimeyi girin:");
+            const meaning = prompt("Anlamını girin:");
+            const category = prompt("Kategoriyi girin (Siyasi, Askeri, Günlük Yaşam):");
+            const history = prompt("Tarihsel bilgiyi girin (isteğe bağlı):");
+            if (latin && meaning && category) {
+                words.push({
+                    latin,
+                    meaning,
+                    history: history || "",
+                    learned: false,
+                    category,
+                    wrongAttempts: 0,
+                    correctAttempts: 0,
+                    image: "",
+                    learnedDate: null,
+                    nextReviewDate: null,
+                    leitnerBox: 0
+                });
+                localStorage.setItem("learnedWords", JSON.stringify(words));
+                updateProgress();
+                alert("Kelime eklendi!");
+            } else {
+                alert("Lütfen tüm gerekli bilgileri girin!");
+            }
+        }
+
+        function searchWord() {
+            const searchTerm = document.getElementById("search").value.toLowerCase();
+            const foundWord = words.find(word => word.latin.toLowerCase().includes(searchTerm));
+            if (foundWord) {
+                currentIndex = words.indexOf(foundWord);
+                displayWord();
+            }
         }
 
         function sendChatMessage() {
-            const messageInput = document.getElementById('chatInput');
-            const message = messageInput.value.trim();
-            const userName = localStorage.getItem('userName') || 'Misafir';
-            if (message) {
-                const timestamp = new Date().toLocaleTimeString();
-                const chatMessage = `${timestamp} - ${userName}: ${message}`;
-
-                if (db) {
-                    db.collection('chatMessages').add({
-                        user: userName,
-                        message: message,
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                    })
-                    .then(() => {
-                        messageInput.value = '';
-                        loadChatMessages();
-                    })
-                    .catch(error => console.error('Mesaj gönderme hatası:', error));
-                } else {
-                    const messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
-                    messages.push(chatMessage);
-                    localStorage.setItem('chatMessages', JSON.stringify(messages));
-                    displayChatMessage(chatMessage);
-                    messageInput.value = '';
-                }
+            const message = document.getElementById("chatInput").value.trim();
+            const userName = localStorage.getItem("userName") || "Anonim";
+            if (message && db) {
+                db.collection("chat").add({
+                    user: userName,
+                    text: message,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                })
+                .then(() => {
+                    document.getElementById("chatInput").value = "";
+                })
+                .catch(error => console.error("Mesaj gönderilemedi:", error));
+            } else if (message) {
+                const chatMessages = document.getElementById("chatMessages");
+                chatMessages.innerHTML += `<p><strong>${userName}:</strong> ${message}</p>`;
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                document.getElementById("chatInput").value = "";
             }
-        }
-
-        function displayChatMessage(message) {
-            const chatMessages = document.getElementById('chatMessages');
-            const messageElement = document.createElement('p');
-            messageElement.innerText = message;
-            chatMessages.appendChild(messageElement);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
         function loadChatMessages() {
-            const chatMessages = document.getElementById('chatMessages');
-            chatMessages.innerHTML = '';
             if (db) {
-                db.collection('chatMessages')
-                  .orderBy('timestamp', 'asc')
-                  .onSnapshot(snapshot => {
-                      chatMessages.innerHTML = '';
-                      snapshot.forEach(doc => {
-                          const data = doc.data();
-                          const timestamp = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleTimeString() : 'Bilinmeyen Zaman';
-                          const chatMessage = `${timestamp} - ${data.user}: ${data.message}`;
-                          displayChatMessage(chatMessage);
-                      });
-                  }, error => console.error('Mesaj yükleme hatası:', error));
+                db.collection("chat").orderBy("timestamp").onSnapshot(snapshot => {
+                    const chatMessages = document.getElementById("chatMessages");
+                    chatMessages.innerHTML = "";
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        chatMessages.innerHTML += `<p><strong>${data.user}:</strong> ${data.text}</p>`;
+                    });
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }, error => console.error("Mesajlar yüklenemedi:", error));
+            }
+        }
+
+        function showLeaderboard() {
+            if (db) {
+                db.collection("users").orderBy("score", "desc").limit(10).get()
+                    .then(querySnapshot => {
+                        const leaderboardList = document.getElementById("leaderboardList");
+                        leaderboardList.innerHTML = "";
+                        querySnapshot.forEach(doc => {
+                            const data = doc.data();
+                            const li = document.createElement("li");
+                            li.innerText = `${data.name}: ${data.score} puan`;
+                            leaderboardList.appendChild(li);
+                        });
+                        document.getElementById("leaderboardSection").style.display = "block";
+                    })
+                    .catch(error => console.error("Liderlik tablosu yüklenemedi:", error));
             } else {
-                const messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
-                messages.forEach(message => displayChatMessage(message));
+                alert("Liderlik tablosu yerel modda kullanılamaz!");
             }
         }
 
-        function exportWrongWordsToPDF() {
-            const wrongWords = words.filter(word => word.wrongAttempts > 0)
-                                   .sort((a, b) => b.wrongAttempts - a.wrongAttempts);
-            if (wrongWords.length === 0) {
-                alert("Henüz yanlış yapılan kelime yok!");
-                return;
-            }
-
-            const doc = new jsPDF();
-            doc.setFontSize(16);
-            doc.text("Yanlış Yapılan Kelimeler", 10, 10);
-            doc.setFontSize(12);
-            let y = 20;
-            wrongWords.forEach((word, index) => {
-                const text = `${index + 1}. ${word.latin} - ${word.meaning} (Yanlış: ${word.wrongAttempts})`;
-                doc.text(text, 10, y);
-                y += 10;
-                if (y > 280) {
-                    doc.addPage();
-                    y = 10;
-                }
-            });
-            doc.save("Yanlis_Kelimeler.pdf");
+        function hideLeaderboard() {
+            document.getElementById("leaderboardSection").style.display = "none";
         }
 
-        function exportWrongWordsToWord() {
-            const wrongWords = words.filter(word => word.wrongAttempts > 0)
-                                   .sort((a, b) => b.wrongAttempts - a.wrongAttempts);
-            if (wrongWords.length === 0) {
-                alert("Henüz yanlış yapılan kelime yok!");
-                return;
-            }
+        function updateScoreAndLevel() {
+            document.getElementById("score").innerText = `Puan: ${userScore}`;
+            let level = "Çırak";
+            if (userScore >= 100) level = "Usta";
+            if (userScore >= 500) level = "Bilge";
+            document.getElementById("level").innerText = `Seviye: ${level}`;
+        }
 
-            const content = [
-                "Yanlış Yapılan Kelimeler\n\n",
-                ...wrongWords.map((word, index) => `${index + 1}. ${word.latin} - ${word.meaning} (Yanlış: ${word.wrongAttempts})\n`)
-            ].join("");
-
-            const blob = new Blob([content], { type: "application/msword" });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = "Yanlis_Kelimeler.doc";
-            link.click();
+        function showDetailedStats() {
+            const totalAttempts = words.reduce((sum, word) => sum + word.correctAttempts + word.wrongAttempts, 0);
+            const correctPercentage = totalAttempts > 0 ? (words.reduce((sum, word) => sum + word.correctAttempts, 0) / totalAttempts * 100).toFixed(2) : 0;
+            alert(`Detaylı İstatistikler:\nToplam Deneme: ${totalAttempts}\nDoğru Yüzdesi: ${correctPercentage}%\nEn Zor Kelime: ${words.reduce((max, word) => word.wrongAttempts > max.wrongAttempts ? word : max, words[0]).latin}`);
         }
     </script>
 </body>
